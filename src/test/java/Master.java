@@ -32,7 +32,7 @@ public class Master
 {
 	public WebDriver driver;
 	InputText input_text =  new InputText();
-	//Clicks click =  new Clicks();
+	////Clicks click =  new Clicks();
 	//SelectDropdown selectdropdown = new SelectDropdown();
 	Validations validation= new Validations();
 	KeyPress keypress = new KeyPress();
