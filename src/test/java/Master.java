@@ -324,8 +324,9 @@ public void main(String tcid, String tc_desc, String stepid, String step_desc, S
 					}
 				}
 				break;
-			}	
+			}
 			
+						
 			/**case "DateFormat_Change (dd/MMM/yyyy)":
 			{
 				
@@ -356,7 +357,11 @@ public void main(String tcid, String tc_desc, String stepid, String step_desc, S
 				break;
 			}	
 			
-						
+			case "DO NOT EXECUTE THIS STEP":
+			{
+				// DO Nothing
+				break;
+			}							
 			default: 
 			{
 				logger.log(LogStatus.INFO,"Invalid or No command specified."); //JOptionPane.showMessageDialog(null,"Invalid Command.");	//No action and show a message box to the user, if required.
