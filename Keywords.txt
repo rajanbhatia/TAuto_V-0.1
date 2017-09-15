@@ -1,0 +1,20 @@
+Browser: Open (Parameter)
+Browser: Close
+Button: Validate Text
+Caption/Message/Text: ValidateText
+Checkbox: Validate if Selected
+Dropdown: Select Value
+Dropdown: Validate Value
+Key: Press (Enter/Return/Tab/Escape) 
+Object: Click
+Object: Validate if Present
+Pause: Delay Execution in Seconds
+Radiobutton: Validate if Selected
+Textbox: Enter Text
+Textbox: Validate Text
+
+
+
+
+
+

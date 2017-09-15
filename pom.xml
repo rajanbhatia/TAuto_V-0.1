@@ -1,0 +1,184 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>ZAuto</groupId>
+  <artifactId>ZAuto</artifactId>
+  <version>0.0.1-SNAPSHOT</version>  
+  <properties>
+  <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  <log4j.version>1.2.17</log4j.version>
+  </properties>
+  <build>
+   <plugins>
+      <plugin>
+         <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.6.1</version>
+        <configuration>
+          <source>1.8</source>
+          <target>1.8</target>
+        </configuration>
+      </plugin>
+    <!-- Surefire Plugin-->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>2.20</version>
+        <configuration> 
+         <forkCount>0</forkCount>
+        	<!-- suiteXmlFiles>
+        		<TestNG suite XML file >
+            	<suiteXmlFile>testng.xml</suiteXmlFile>
+         	</suiteXmlFiles-->         	
+        </configuration> 
+      </plugin> 
+       <plugin>
+        <!-- To create manifest file-->
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <version>3.0.2</version>
+        <configuration>
+          <archive>
+            <manifest>
+        		<mainClass>MainOne</mainClass>
+    		</manifest>
+          </archive>
+        </configuration>        
+      </plugin>
+      
+      <!-- plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-assembly-plugin</artifactId>
+                <version>2.6</version>
+                <configuration>
+                <descriptorRefs>
+                        <descriptorRef>jar-with-dependencies</descriptorRef>
+                        <descriptorRef>bin</descriptorRef>
+                        <descriptorRef>src</descriptorRef>
+                        <descriptorRef>project</descriptorRef>
+                 </descriptorRefs>
+                 <descriptors>
+                       <descriptor>src/main/assembly/assembly.xml</descriptor>
+                 </descriptors>                    
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>make-assembly</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>                        
+                    </execution>
+                </executions>
+            </plugin-->     
+      
+      
+      <plugin> 
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-shade-plugin</artifactId>
+        <version>3.1.0</version>
+        <!-- executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>shade</goal>
+            </goals>
+            <configuration>
+              <descriptorRefs>
+            	<descriptorRef>jar-with-dependencies</descriptorRef>
+          	  </descriptorRefs>
+            <shadedArtifactAttached>true</shadedArtifactAttached>
+              <transformers>
+                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                 
+                  <mainClass>MainOne</mainClass>
+                </transformer>
+              </transformers>
+            </configuration>
+          </execution>
+        </executions-->
+      </plugin>
+      
+           
+    </plugins>   
+    
+    
+    </build>    
+ <dependencies>
+ 	<dependency>   <!--  WebDriverManager can download the proper Marionette(geckodriver) binary for the machine (Linux, Mac, or Windows) and export the value of the proper system property. Firefox dependency to download the latest  -->
+    	<groupId>io.github.bonigarcia</groupId>
+    	<artifactId>webdrivermanager</artifactId>
+    	<version>1.7.1</version>
+	</dependency>
+	<dependency>
+    	<groupId>org.apache.maven.shared</groupId>
+    	<artifactId>maven-invoker</artifactId>
+  		<version>3.0.0</version>
+	</dependency>
+  	<dependency>
+  		<groupId>org.seleniumhq.selenium</groupId>
+  		<artifactId>selenium-java</artifactId>
+  		<version>3.4.0</version>
+  	</dependency>
+  	<!-- https://mvnrepository.com/artifact/org.seleniumhq.selenium/selenium-api -->
+	<dependency>
+    	<groupId>org.seleniumhq.selenium</groupId>
+    	<artifactId>selenium-api</artifactId>
+    	<version>3.4.0</version>
+	</dependency>
+	<dependency>
+    	<groupId>org.seleniumhq.selenium</groupId>
+    	<artifactId>selenium-server</artifactId>
+    	<version>3.4.0</version>
+	</dependency>
+  	<dependency>
+  		<groupId>log4j</groupId>
+  		<artifactId>log4j</artifactId>
+  		<version>${log4j.version}</version>
+  	</dependency>
+  	<dependency>
+  		<groupId>org.testng</groupId>
+  		<artifactId>testng</artifactId>
+  		<version>6.11</version>
+  		<scope>test</scope>
+  	</dependency>
+  	<!-- dependency>
+  		<groupId>org.apache.poi</groupId>
+  		<artifactId>poi</artifactId>
+  		<version>3.16</version>
+  		<scope>test</scope>
+  	</dependency-->
+  	<!-- dependency>
+  		<groupId>io.appium</groupId>
+  		<artifactId>java-client</artifactId>
+  		<version>4.1.2</version>
+  	</dependency-->
+  	<dependency>
+  		<groupId>org.apache.maven.surefire</groupId>
+  		<artifactId>surefire-api</artifactId>
+  		<version>2.20</version>
+  	</dependency>
+  	<dependency>
+  		<groupId>com.relevantcodes</groupId>
+  		<artifactId>extentreports</artifactId>
+  		<version>2.41.2</version>
+  	</dependency>
+  	<dependency>
+  		<groupId>joda-time</groupId>
+  		<artifactId>joda-time</artifactId>
+  		<version>2.9.9</version>
+  	</dependency>
+  	<dependency>
+	    <groupId>org.apache.poi</groupId>
+	    <artifactId>poi-ooxml</artifactId>
+	    <version>3.16</version>
+	</dependency>	
+  	<!-- https://mvnrepository.com/artifact/javax.mail/mail -->
+	<dependency>
+    	<groupId>javax.mail</groupId>
+    	<artifactId>mail</artifactId>
+    	<version>1.4.7</version>
+	</dependency>
+  	
+  </dependencies>
+    
+</project>
