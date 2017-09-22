@@ -1,5 +1,5 @@
 - Install latest jdk and set its path.
 - Install the browsers.
-- Install git (if using)
+- Install git (if using) *
 
 Notes- Don't mention http:// for URLs.

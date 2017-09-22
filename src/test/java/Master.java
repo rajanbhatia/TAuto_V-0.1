@@ -46,8 +46,7 @@ public class Master
 public void main(String tcid, String tc_desc, String stepid, String step_desc, String command, String locatortype, String locatorvalue, String parametervalue) //, String result, String error)
 {	
 	try
-	{
-	 	
+	{	 	
 		//logger = ReportScreenshotUtility.report.startTest("Automation Run: Testcase- "+tcid+", Teststep- "+stepid);  //To log every step on the left panel
 		exceptionerror=false;	   //ExceptionError flag to capture errors and log to the logger report   
 		System.out.println(tcid + " " + tc_desc + " " + stepid + " " + step_desc + " " + command  + " " + locatortype  + " " + locatorvalue + " " + parametervalue + " " + "\n");
@@ -359,7 +358,7 @@ public void main(String tcid, String tc_desc, String stepid, String step_desc, S
 			
 			case "DO NOT EXECUTE THIS STEP":
 			{
-				// DO Nothing
+				/// DO Nothing
 				break;
 			}							
 			default: 

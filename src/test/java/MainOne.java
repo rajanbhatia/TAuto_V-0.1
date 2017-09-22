@@ -1,16 +1,20 @@
-import java.io.File;
-import java.util.Collections;
 
-import org.apache.maven.shared.invoker.DefaultInvocationRequest;
-import org.apache.maven.shared.invoker.DefaultInvoker;
-import org.apache.maven.shared.invoker.InvocationRequest;
-import org.apache.maven.shared.invoker.Invoker;
-import org.apache.maven.shared.invoker.MavenInvocationException;
+import org.testng.TestListenerAdapter;
 ///
+import org.testng.TestNG;
 
 public class MainOne {
-
+	@SuppressWarnings("deprecation")
 	public static void main(String[] args) {
+					
+			TestListenerAdapter tla = new TestListenerAdapter();
+			TestNG testng = new TestNG();
+			testng.setTestClasses(new Class[] { Master.class });
+			testng.addListener(tla);
+			testng.run();
+		
+		
+		/**
 		 InvocationRequest request = new DefaultInvocationRequest();
 	        request.setPomFile(new File("pom.xml"));
 	        request.setGoals(Collections.singletonList("install"));
@@ -20,7 +24,7 @@ public class MainOne {
 	            invoker.execute(request);
 	        } catch (MavenInvocationException e) {
 	            e.printStackTrace();
-	        } 
+	        }**/ 
 	    } 
 
 	
