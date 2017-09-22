@@ -1,18 +1,10 @@
-
-
-
 import org.testng.TestListenerAdapter;
 import org.testng.TestNG;
-///
 
-
-
-public class MainOne {
-	
-		public static void main(String args[])
+public class MainOne{
+		public static void main(String[] args)
 		{				
-			
-			TestListenerAdapter tla = new TestListenerAdapter();
+			//TestListenerAdapter tla = new TestListenerAdapter();
 			TestNG testng = new TestNG();
 			testng.setTestClasses(new Class[] { Master.class });
 			//List<String> suites = Lists.newArrayList();
@@ -34,8 +26,5 @@ public class MainOne {
 	        } catch (MavenInvocationException e) {
 	            e.printStackTrace();
 	        }**/ 
-	    } 
-
-	
-
-}
+	    }
+	}
