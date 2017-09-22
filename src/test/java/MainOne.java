@@ -1,16 +1,25 @@
 
+
+
 import org.testng.TestListenerAdapter;
-///
 import org.testng.TestNG;
+///
+
+
 
 public class MainOne {
-	@SuppressWarnings("deprecation")
-	public static void main(String[] args) {
-					
+	
+		public static void main(String args[])
+		{				
+			
 			TestListenerAdapter tla = new TestListenerAdapter();
 			TestNG testng = new TestNG();
 			testng.setTestClasses(new Class[] { Master.class });
-			testng.addListener(tla);
+			//List<String> suites = Lists.newArrayList();
+			//suites.add("c:/tests/testng1.xml");//path to xml..
+			//suites.add("c:/tests/testng2.xml");
+			//testng.setTestSuites(suites);
+			//testng.addListener(tla);
 			testng.run();
 		
 		
