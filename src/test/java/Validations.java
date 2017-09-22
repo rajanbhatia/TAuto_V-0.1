@@ -2,15 +2,12 @@ import static org.testng.Assert.assertEquals;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.Select;
 
 
 public class Validations 		//Class to test all the assertEqual validations, including getAttribute("values")
-{   			
-	
-
-		// e.g. captions
+{   
+	// e.g. captions
 		public void validateCaptionByXpath(String xpath, String validationtext, WebDriver driver)    // xpath validation
 		{
 			assertEquals(driver.findElement(By.xpath(xpath)).getText(),validationtext);
