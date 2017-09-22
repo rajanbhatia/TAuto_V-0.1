@@ -1,7 +1,12 @@
 
 import static org.testng.Assert.assertTrue;
 import io.github.bonigarcia.wdm.FirefoxDriverManager;
+
 import java.util.concurrent.TimeUnit;
+
+import java.util.logging.LogManager;
+import java.util.logging.Logger;
+
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
@@ -17,6 +22,7 @@ import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
+
 import com.relevantcodes.extentreports.ExtentTest;
 import com.relevantcodes.extentreports.LogStatus;
 
@@ -42,7 +48,7 @@ public void main(String tcid, String tc_desc, String stepid, String step_desc, S
 	{	 	
 		//logger = ReportScreenshotUtility.report.startTest("Automation Run: Testcase- "+tcid+", Teststep- "+stepid);  //To log every step on the left panel
 		exceptionerror=false;	   //ExceptionError flag to capture errors and log to the logger report   
-		System.out.println(tcid + " " + tc_desc + " " + stepid + " " + step_desc + " " + command  + " " + locatortype  + " " + locatorvalue + " " + parametervalue + " " + "\n");
+		//System.out.println(tcid + " " + tc_desc + " " + stepid + " " + step_desc + " " + command  + " " + locatortype  + " " + locatorvalue + " " + parametervalue + " " + "\n");
 		switch (command)
 		{
 			case "Browser: Open (Parameter Value)": 
@@ -442,8 +448,7 @@ public void setUp() throws Exception
 	}
 	testcasepath = (String) preferencesdata[0][0];
 	sheetnumber =  Integer.parseInt((String) preferencesdata[1][0]);
-	System.out.println(preferencesdata[2][0]);
-	System.out.println(preferencesdata[3][0]);
+	
 	//check null chrome browser parameter
 	if (preferencesdata[2][0]!="")  	browsername = (String) preferencesdata[2][0];  
 	else								browsername = "Chrome";						//Default browser is Chrome, if none specified
@@ -452,8 +457,17 @@ public void setUp() throws Exception
 	if (preferencesdata[3][0]!="")		executionreportpath = (String) preferencesdata[3][0];
 	else								executionreportpath = "";					//Report path local installed directory
 	
+	//Setup Logging off - First one seems to be working
+	LogManager.getLogManager().reset();
+	Logger globalLogger = Logger.getLogger(java.util.logging.Logger.GLOBAL_LOGGER_NAME);
+	globalLogger.setLevel(java.util.logging.Level.OFF);
 	
-	
+	/**Logger globalLogger = Logger.getLogger("global");
+	/**Handler[] handlers = globalLogger.getHandlers();
+	for(Handler handler : handlers) {
+	 globalLogger.removeHandler(handler);}
+	**/
+	//Logger.getLogger("");
 	
 ///	propertyconfig = new ConfigReader(); //Read the Config Property value
 	//System.setProperty("webdriver.gecko.driver", propertyconfig.getGeckoPath());  //gecko is required for Selenium 3
