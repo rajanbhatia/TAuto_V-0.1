@@ -39,7 +39,7 @@ public class Master
 	String errormessage, testcasepath, browsername, executionreportpath;
 	int sheetnumber;	
 	Boolean exceptionerror;
-	
+	String stepdescription, command;
 	
 @Test(dataProvider = "TestSteps")
 public void main(String tcid, String tc_desc, String stepid, String step_desc, String command, String locatortype, String locatorvalue, String parametervalue) //, String result, String error)
@@ -48,6 +48,8 @@ public void main(String tcid, String tc_desc, String stepid, String step_desc, S
 	{	 	
 		//logger = ReportScreenshotUtility.report.startTest("Automation Run: Testcase- "+tcid+", Teststep- "+stepid);  //To log every step on the left panel
 		exceptionerror=false;	   //ExceptionError flag to capture errors and log to the logger report   
+		stepdescription=step_desc;
+		this.command=command;
 		//System.out.println(tcid + " " + tc_desc + " " + stepid + " " + step_desc + " " + command  + " " + locatortype  + " " + locatorvalue + " " + parametervalue + " " + "\n");
 		switch (command)
 		{
@@ -297,8 +299,7 @@ public void main(String tcid, String tc_desc, String stepid, String step_desc, S
 			case "Browser: Close": 
 			{
 				driver.close();
-				System.out.println("Test Case - "+tcid+"("+tc_desc+") executed.");
-				logger.log(LogStatus.INFO,"Test Case - "+tcid+"("+tc_desc+") executed.");
+				//logger.log(LogStatus.INFO,"Test Case - "+tcid+"("+tc_desc+") executed.");
 				break;
 			}
 			
@@ -417,16 +418,17 @@ public void tearD(ITestResult result) throws Exception
 	 String screenshot_path = ReportScreenshotUtility.captureScreenshot(driver,executionreportpath,result.getName());   //Take screenshot if Test Case fails and at the same location where execution report is saved.
  	 String image=logger.addScreenCapture(screenshot_path);
  	 logger.log(LogStatus.FAIL, "Failed", image);
- 	 if(ITestResult.FAILURE==result.getStatus())		logger.log(LogStatus.FAIL, "Exception Message", result.getThrowable());
- 	 if (exceptionerror==true)  logger.log(LogStatus.FAIL, "Exception Message", errormessage);
+ 	 if(ITestResult.FAILURE==result.getStatus())		logger.log(LogStatus.FAIL, stepdescription+": FAILED. Exception Message:"+ result.getThrowable());
+ 	 if (exceptionerror==true)  logger.log(LogStatus.FAIL, stepdescription+": FAILED. Exception Message:"+ errormessage);
  }
  else if (ITestResult.SUCCESS==result.getStatus() && (exceptionerror.equals(false)))   //Check if Test case has passed
  {
- 	logger.log(LogStatus.PASS, "Passed");	
+ 	 if (command.equals("DO NOT EXECUTE THIS STEP")) logger.log(LogStatus.PASS, stepdescription+": SKIPPED");  //to capture the non-executed step in the report.
+ 	 else logger.log(LogStatus.PASS, stepdescription+": PASSED");	
  }
  else if (ITestResult.SKIP==result.getStatus())  //Check if Test case has passed
  {
-	logger.log(LogStatus.SKIP, "Test case Skipped"+result.getThrowable());	
+	logger.log(LogStatus.SKIP, stepdescription+": SKIPPED. "+result.getThrowable());	
  }		
 	 ReportScreenshotUtility.report.endTest(logger);
 	 ReportScreenshotUtility.report.flush();
@@ -455,7 +457,7 @@ public void setUp() throws Exception
 	
 	//check null report path parameter
 	if (preferencesdata[3][0]!="")		executionreportpath = (String) preferencesdata[3][0];
-	else								executionreportpath = "";					//Report path local installed directory
+	else								executionreportpath = "";					//Report path local directory
 	
 	//Setup Logging off - First one seems to be working
 	LogManager.getLogManager().reset();
