@@ -581,7 +581,7 @@ public void progressBar()
 	//progressBar.setValue(25);
 	//progressBar.setStringPainted(true);
 	//Border border = BorderFactory.createTitledBorder("Launching...");
-	//progressBar.setBorder(border);
+	///progressBar.setBorder(border);
 	content.add(progressBar, BorderLayout.NORTH);
 	f.setSize(400, 100);
 	f.setAlwaysOnTop(true);
