@@ -1,0 +1,21 @@
+Browser: Open (Parameter Value)
+Browser: Close
+Button: Validate Text (Locator Value, Parameter Value)
+Caption/Text: Validate Text (Locator Value, Parameter Value)
+Checkbox: Validate if Selected (Locator Value)
+Dropdown: Select Value (Locator Value, Parameter Value)
+Dropdown: Validate Value (Locator Value, Parameter Value)
+Key: Press (Enter/Return/Tab/Escape) (Locator Value, Parameter Value)
+Object: Click (Locator Value)
+Object: Validate if Present (Locator Value)
+Pause: Delay Execution in Seconds
+Radiobutton: Validate if Selected (Locator Value)
+Textbox: Enter Text (Locator Value, Parameter Value)
+Textbox: Validate Text (Locator Value, Parameter Value)
+DO NOT EXECUTE THIS STEP
+
+
+
+
+
+
