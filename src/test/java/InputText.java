@@ -3,7 +3,6 @@ import org.openqa.selenium.WebDriver;
 
 
 public class InputText {				//Enter text in text boxes
-
 	
 	public void textboxXpathEnterText(String xpath, String text, WebDriver driver)   
 	{
