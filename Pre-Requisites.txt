@@ -1,5 +1,6 @@
 - Install latest jdk and set its path.
 - Install the browsers.
 - Install git (if using) *
+- Make sure Enable Protected Mode has same setting for all under Tools->Options->Security for IE.
 
 Notes- Don't mention http:// for URLs.
