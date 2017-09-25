@@ -463,11 +463,11 @@ public void tearD(ITestResult result) throws Exception
 @BeforeClass(alwaysRun=true)
 public void setUp() throws Exception 
 {		
-	LogManager.getLogManager().reset();
-	Logger globalLogger = Logger.getLogger(java.util.logging.Logger.GLOBAL_LOGGER_NAME);
-	globalLogger.setLevel(java.util.logging.Level.OFF);
 	progressBar(); // Call the Progress Bar code
 	f.setVisible(true); //Display the Progress Bar
+	LogManager.getLogManager().reset();
+	Logger globalLogger = Logger.getLogger(java.util.logging.Logger.GLOBAL_LOGGER_NAME);
+	globalLogger.setLevel(java.util.logging.Level.OFF);	
 	ExcelDataConfig excelreadpreferences = new ExcelDataConfig(System.getProperty("user.dir")+"/Preferences.xlsx");	
 	Object[][] preferencesdata = new Object[4][1];
 	for(int i=0;i<4;i++)   //Initializing Array to rows-1. First row is just headings and make sure every column cell has a text
