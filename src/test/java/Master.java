@@ -48,13 +48,17 @@ public class Master
 	int sheetnumber;	
 	Boolean exceptionerror;
 	String stepdescription, command;
-	JFrame f = new JFrame("Launching AutoTool...");
+	private JFrame f = new JFrame("Starting Test Execution...");
+	
+	///Object[][] teststeps = new Object[3][8];	 
+	
+	
 @Test(dataProvider = "TestSteps")
 public void main(String tcid, String tc_desc, String stepid, String step_desc, String command, String locatortype, String locatorvalue, String parametervalue) //, String result, String error)
 {	
 	try
 	{	 	
-		
+		///teststeps[0][0]=tcid;teststeps[0][0]=tcid;teststeps[0][0]=tcid;teststeps[0][0]=tcid;teststeps[0][0]=tcid;teststeps[0][0]=tcid;teststeps[0][0]=tcid;
 		//logger = ReportScreenshotUtility.report.startTest("Automation Run: Testcase- "+tcid+", Teststep- "+stepid);  //To log every step on the left panel
 		exceptionerror=false;	   //ExceptionError flag to capture errors and log to the logger report   
 		stepdescription=step_desc;
@@ -62,7 +66,7 @@ public void main(String tcid, String tc_desc, String stepid, String step_desc, S
 		//System.out.println(tcid + " " + tc_desc + " " + stepid + " " + step_desc + " " + command  + " " + locatortype  + " " + locatorvalue + " " + parametervalue + " " + "\n");
 		switch (command)
 		{
-			case "Browser: Open (Parameter Value)": 
+			case "Browser: Open (parameter value)": 
 			{
 				logger = ReportScreenshotUtility.report.startTest("Automation Run: Testcase- "+tcid); //To log every testcase on the left panel and teststeps on the right.
 				//browserSettings(driver, parametervalue);
@@ -115,8 +119,8 @@ public void main(String tcid, String tc_desc, String stepid, String step_desc, S
 				break;
 			}
 					
-			case "Textbox: Enter Text (Locator Value, Parameter Value)": 
-			{
+			case "Textbox: Enter Text (locator value, parameter value)": 
+			{	
 				checkLocParamBlankValues(locatorvalue, parametervalue);  //check null or blank values and set the exceptionerror and exceptionmessage text.
 				if (exceptionerror.equals(false))  //Execute it only if the values are valid
 				{
@@ -143,7 +147,7 @@ public void main(String tcid, String tc_desc, String stepid, String step_desc, S
 				break;
 			}
 			
-			case "Textbox: Validate Text (Locator Value, Parameter Value)": 
+			case "Textbox: Validate Text (locator value, Parameter Value)": 
 			{
 				checkLocParamBlankValues(locatorvalue, parametervalue);  //check null or blank values and set the exceptionerror and exceptionmessage text.
 				if (exceptionerror.equals(false))  //Execute it only if the values are valid
@@ -167,7 +171,7 @@ public void main(String tcid, String tc_desc, String stepid, String step_desc, S
 				break;
 			}
 			
-			case "Caption/Text: Validate Text (Locator Value, Parameter Value)": 
+			case "Caption/Text: Validate Text (locator value, parameter value)": 
 			{
 				checkLocParamBlankValues(locatorvalue, parametervalue);  //check null or blank values and set the exceptionerror and exceptionmessage text.
 				if (exceptionerror.equals(false)) //Execute it only if the values are valid
@@ -190,7 +194,7 @@ public void main(String tcid, String tc_desc, String stepid, String step_desc, S
 				}
 				break;
 			}
-			case "Dropdown: Select Value (Locator Value, Parameter Value)": 
+			case "Dropdown: Select Value (locator value, parameter value)": 
 			{
 				checkLocParamBlankValues(locatorvalue, parametervalue);  //check null or blank values and set the exceptionerror and exceptionmessage text.
 				if (exceptionerror.equals(false)) //Execute it only if the values are valid
@@ -215,7 +219,7 @@ public void main(String tcid, String tc_desc, String stepid, String step_desc, S
 				break;
 			}
 			
-			case "Dropdown: Validate Value (Locator Value, Parameter Value)": 
+			case "Dropdown: Validate Value (locator value, parameter value)": 
 			{
 				checkLocParamBlankValues(locatorvalue, parametervalue);  //check null or blank values and set the exceptionerror and exceptionmessage text.
 				if (exceptionerror.equals(false))  //Execute it only if the values are valid
@@ -239,7 +243,7 @@ public void main(String tcid, String tc_desc, String stepid, String step_desc, S
 				}
 				break;
 			}
-			case "Button: Validate Text (Locator Value, Parameter Value)": 
+			case "Button: Validate Text (locator value, parameter value)": 
 			{
 				checkLocParamBlankValues(locatorvalue, parametervalue);  //check null or blank values and set the exceptionerror and exceptionmessage text.
 				if (exceptionerror.equals(false))  //Execute it only if the values are valid
@@ -262,7 +266,7 @@ public void main(String tcid, String tc_desc, String stepid, String step_desc, S
 				}
 				break;
 			}
-			case "Object: Click (Locator Value)":
+			case "Object: Click (locator value)":
 			{
 				checkLocBlankValue(locatorvalue);  //check null or blank values and set the exceptionerror and exceptionmessage text.
 				if (exceptionerror.equals(false)) //Execute it only if the values are valid
@@ -279,14 +283,15 @@ public void main(String tcid, String tc_desc, String stepid, String step_desc, S
 						break;
 						default:
 							//logger.log(LogStatus.INFO,"Invalid or No Locator type specified for the object to click."); //JOptionPane.showMessageDialog(null,"Invalid Command.");	//No action and show a message box to the user, if required.
-							errormessage="Invalid or No Locator type specified for the object to click.";   							
+							errormessage="Invalid or No Locator type specified for the object to click.";   	
+							exceptionerror=true; 	
 					}					
 				}
 				break;
 			}
 			
 			
-			case "Key: Press (Enter/Return/Tab/Escape) (Locator Value, Parameter Value)":
+			case "Key: Press (Enter/Return/Tab/Escape) (locator value, parameter value)":
 			{
 				checkLocBlankValue(locatorvalue);  //check null or blank values and set the exceptionerror and exceptionmessage text.
 				if (exceptionerror.equals(false))  //Execute it only if the values are valid
@@ -323,7 +328,7 @@ public void main(String tcid, String tc_desc, String stepid, String step_desc, S
 				break;
 			}
 			
-			case "Object: Validate if Present (Locator Value)":
+			case "Object: Validate if Present (locator value)":
 			{
 				checkLocBlankValue(locatorvalue);  //check null or blank values and set the exceptionerror and exceptionmessage text.
 				if (exceptionerror.equals(false))  //Execute it only if the values are valid
@@ -339,7 +344,7 @@ public void main(String tcid, String tc_desc, String stepid, String step_desc, S
 						case "CssSelector":	assertTrue(isElementPresent(By.cssSelector(locatorvalue)));
 						break;
 						default:
-							logger.log(LogStatus.INFO,"Invalid or No Locator type specified for the object to verify its presence."); //JOptionPane.showMessageDialog(null,"Invalid Command.");	//No action and show a message box to the user, if required.
+							errormessage = "Invalid or No Locator type specified for the object to verify its presence."; //JOptionPane.showMessageDialog(null,"Invalid Command.");	//No action and show a message box to the user, if required.
 							exceptionerror=true;   						
 					}
 				}
@@ -354,8 +359,8 @@ public void main(String tcid, String tc_desc, String stepid, String step_desc, S
 			}	**/
 			
 			
-			case "Checkbox: Validate if Selected (Locator Value)":
-			case "Radiobutton: Validate if Selected (Locator Value)":
+			case "Checkbox: Validate if Selected (locator value)":
+			case "Radiobutton: Validate if Selected (locator value)":
 			{
 				checkLocBlankValue(locatorvalue);  //check null or blank values and set the exceptionerror and exceptionmessage text.
 				if (exceptionerror.equals(false))  //Execute it only if the values are valid
@@ -371,22 +376,38 @@ public void main(String tcid, String tc_desc, String stepid, String step_desc, S
 						case "CssSelector":	assertTrue(driver.findElement(By.cssSelector(locatorvalue)).isSelected());
 						break;
 						default:
-							logger.log(LogStatus.INFO,"Invalid or No Locator type specified for the checkbox/radiobutton to verify the selection."); //JOptionPane.showMessageDialog(null,"Invalid Command.");	//No action and show a message box to the user, if required.
+							errormessage="Invalid or No Locator type specified for the checkbox/radiobutton to verify the selection."; //JOptionPane.showMessageDialog(null,"Invalid Command.");	//No action and show a message box to the user, if required.
 							exceptionerror=true;   
 						
 					}
 				}
 				break;
 			}	
+		/**	case "Execute Above Steps Multiple Times (parameter value)":
+			{
+				int maxtimes= Integer.parseInt(parametervalue);
+				int row = 
+				for (int i=1;i<=maxtimes;i++)
+				{
+					for(int j=0;j<rows-2;j++)   //Initializing Array to rows-1. First row is just headings and make sure every column cell has a text
+					{					    
+						
+							main(testcasesdata[j+1][0],testcasesdata[j+1][1],testcasesdata[j+1][2],testcasesdata[j+1][3],testcasesdata[j+1][4],testcasesdata[j+1][5],testcasesdata[j+1][6],testcasesdata[j+1][7])					
+											
+					}
+					main(tcid, tc_desc, stepid, step_desc, command, locatortype, locatorvalue, parametervalue);					
+				}
+				break;
+			}**/
 			
-			case "DO NOT EXECUTE THIS STEP":
+			case "Do Not Execute This Step":
 			{
 				/// DO Nothing
 				break;
 			}							
 			default: 
 			{
-				logger.log(LogStatus.INFO,"Invalid or No command specified."); //JOptionPane.showMessageDialog(null,"Invalid Command.");	//No action and show a message box to the user, if required.
+				errormessage="Invalid or No command specified."; //JOptionPane.showMessageDialog(null,"Invalid Command.");	//No action and show a message box to the user, if required.
 				exceptionerror=true;   
 				break;
 			}
@@ -402,9 +423,8 @@ public void main(String tcid, String tc_desc, String stepid, String step_desc, S
 
 @DataProvider(name="TestSteps")  //Parameterizing @Test code for the Excel records
 public Object[][] readTestCases() throws Exception   // Load Data Excel  
-{	  		  	
-		
-	    
+{	  		    
+	
 	sheetnumber = sheetnumber-1; // As user will input the exact serial number and the index starts from 0.
 ///	String excelpath=propertyconfig.getExcelSheetPath();
   	//ExcelDataConfig excelconfig = new ExcelDataConfig("C:\\Users\\rbhatia\\Google Drive\\Project\\Automation\\ZAuto\\TestCases.xlsx");	  	  	
@@ -414,8 +434,7 @@ public Object[][] readTestCases() throws Exception   // Load Data Excel
 	Object[][] testcasesdata = new Object[rows-1][cols];	
 	for(int i=0;i<rows-1;i++)   //Initializing Array to rows-1. First row is just headings and make sure every column cell has a text
 	{
-	    
-		for (int j=0;j<cols;j++)  //Columns value is one more than the index so less than sign
+	    for (int j=0;j<cols;j++)  //Columns value is one more than the index so less than sign
 		{
 			testcasesdata[i][j]=excelconfig.getData(sheetnumber, i+1, j);  //Picking data from the 2nd row in excel sheet, so i+1
 			
@@ -431,6 +450,7 @@ public Object[][] readTestCases() throws Exception   // Load Data Excel
 			}**/
 		}					
 	}
+
 	return testcasesdata;
 }
 
@@ -556,6 +576,7 @@ public void tearDown() throws Exception
     {
       AssertJUnit.fail(verificationErrorString);
     }
+    
     //ReportScreenshotUtility.report.flush();   
   }
 

@@ -14,7 +14,7 @@ Radiobutton: Validate if Selected (locator value)
 Textbox: Enter Text (locator value, parameter value)
 Textbox: Validate Text (locator value, parameter value)
 
-Execute Above Steps Multiple Times (parameter value)
+Execute All TestCases Multiple Times (parameter value)
 
 
 

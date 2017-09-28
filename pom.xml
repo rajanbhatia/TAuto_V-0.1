@@ -87,12 +87,12 @@
   		<version>6.11</version>
   		<scope>test</scope>
   	</dependency>
-  	<!-- dependency>
-  		<groupId>org.apache.poi</groupId>
+  	<dependency>
+  		<groupId>org.apache.poi</groupId>  <!-- xls -->
   		<artifactId>poi</artifactId>
   		<version>3.16</version>
   		<scope>test</scope>
-  	</dependency-->
+  	</dependency>
   	<!-- dependency>
   		<groupId>io.appium</groupId>
   		<artifactId>java-client</artifactId>
@@ -114,7 +114,7 @@
   		<version>2.9.9</version>
   	</dependency>
   	<dependency>
-	    <groupId>org.apache.poi</groupId>
+	    <groupId>org.apache.poi</groupId> <!-- xlsx -->
 	    <artifactId>poi-ooxml</artifactId>
 	    <version>3.16</version>
 	</dependency>	
