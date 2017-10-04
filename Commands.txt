@@ -9,7 +9,7 @@ Dropdown: Validate Value (locator value, parameter value)
 Key: Press (Enter/Return/Tab/Escape) (locator value, parameter value)
 Object: Click (locator value)
 Object: Validate if Present (locator value)
-Pause: Delay Execution in Seconds
+Pause: Delay Execution in Seconds (parameter value)
 Radiobutton: Validate if Selected (locator value)
 Textbox: Enter Text (locator value, parameter value)
 Textbox: Validate Text (locator value, parameter value)

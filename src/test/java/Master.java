@@ -1,20 +1,29 @@
 
 import static org.testng.Assert.assertTrue;
 import io.github.bonigarcia.wdm.FirefoxDriverManager;
+
 import java.awt.BorderLayout;
 import java.awt.Container;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
+
 import javax.swing.JFrame;
 import javax.swing.JProgressBar;
+
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.Keys;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.firefox.FirefoxBinary;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.ie.InternetExplorerDriver;
-import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.ie.InternetExplorerOptions;
+import org.openqa.selenium.safari.SafariDriver;
 import org.openqa.selenium.support.ui.Select;
 import org.testng.AssertJUnit;
 import org.testng.ITestResult;
@@ -23,6 +32,7 @@ import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
+
 import com.relevantcodes.extentreports.ExtentTest;
 import com.relevantcodes.extentreports.LogStatus;
 
@@ -64,9 +74,9 @@ public void main(String tcid, String tc_desc, String stepid, String step_desc, S
 				//browserSettings(driver, parametervalue);
 				switch(browsername)
 				{
-					case "Chrome":						
+					case "Chrome":			
 							System.setProperty("webdriver.chrome.driver", System.getProperty("user.dir")+"/drivers/chromedriver.exe");
-							driver = new ChromeDriver();						
+							driver = new ChromeDriver();							
 							break;						
 					case "Firefox":
 							FirefoxDriverManager.getInstance().setup();
@@ -74,25 +84,58 @@ public void main(String tcid, String tc_desc, String stepid, String step_desc, S
 							//System.setProperty("webdriver.chrome.driver", "C:\\firefoxdriver.exe");
 							driver = new FirefoxDriver();
 							break;						
-					case "Internet Explorer":						
-							DesiredCapabilities capabilities = DesiredCapabilities.internetExplorer(); // To speed up IE. If not use 32 bit driver
+					case "Internet Explorer":	// 64-bit types slowly in the textfields so use 32-bit					
+							/** DEPRECATED DesiredCapabilities capabilities = DesiredCapabilities.internetExplorer(); // To speed up IE. If not use 32 bit driver
 							capabilities.setCapability(InternetExplorerDriver.INTRODUCE_FLAKINESS_BY_IGNORING_SECURITY_DOMAINS, true);
 							capabilities.setCapability(InternetExplorerDriver.REQUIRE_WINDOW_FOCUS, true);
 							capabilities.setCapability(InternetExplorerDriver.IGNORE_ZOOM_SETTING, true);
-			
 							//capabilities.setCapability(InternetExplorerDriver.IE_ENSURE_CLEAN_SESSION, true);
-							capabilities.setCapability("IntroduceInstabilityByIgnoringProtectedModeSettings",true);
+							capabilities.setCapability("IntroduceInstabilityByIgnoringProtectedModeSettings",true);**/
+							
+							InternetExplorerOptions options = new InternetExplorerOptions();
+							//options.setCapability(InternetExplorerDriver.INTRODUCE_FLAKINESS_BY_IGNORING_SECURITY_DOMAINS, true);
+							options.setCapability(InternetExplorerDriver.REQUIRE_WINDOW_FOCUS, true);
+							options.setCapability(InternetExplorerDriver.IGNORE_ZOOM_SETTING, true);
+							options.setCapability(InternetExplorerDriver.NATIVE_EVENTS, false);
+							options.setCapability(InternetExplorerDriver.UNEXPECTED_ALERT_BEHAVIOR, "accept");
+							//options.setCapability(InternetExplorerDriver.ENABLE_PERSISTENT_HOVERING, true);
+							options.setCapability("javascriptEnabled", true);
+							options.setCapability("disable-popup-blocking", true);
+							
+							//options.setCapability(InternetExplorerDriver.IE_ENSURE_CLEAN_SESSION, true);
+							options.setCapability("IgnoringProtectedModeSettings",true);
 							System.setProperty("webdriver.ie.driver", System.getProperty("user.dir")+"/drivers/IEDriverServer.exe");
-							driver = new InternetExplorerDriver(capabilities);
+							driver = new InternetExplorerDriver(options);
+							
 							break;						
-					case "Safari":						
-							/** Not for now....System.setProperty("webdriver.safari.driver", "C:\\safaridriver.exe");  //gecko is required for Selenium 3
+					case "Safari": //Deprecated for Windows, only in MAC now						
+						/**	System.setProperty("webdriver.safari.driver", "C:\\safaridriver.exe");  //gecko is required for Selenium 3
 							driver = new SafariDriver();				
-							browserSettings(driver, parametervalue);**/
-							break;						
+						
+							break;**/
+					case "Chrome (Non-GUI)":
+							//*** Headless ***//
+							ChromeOptions chromeOptions = new ChromeOptions();
+					        chromeOptions.addArguments("--headless");
+					        chromeOptions.addArguments("--disable-gpu");  //disable GPU accelerator abd it doesn't work properly in headless mode           
+					        driver = new ChromeDriver(chromeOptions);
+							//HTMLUnitDriver
+							//driver = new HtmlUnitDriver();				
+							//((HtmlUnitDriver)driver).setJavascriptEnabled(true);
+					        break;				        
+					case "Firefox (Non-GUI)":
+					        /** Headless **/
+							FirefoxBinary firefoxBinary = new FirefoxBinary();
+							firefoxBinary.addCommandLineOptions("--headless");
+							//System.setProperty("webdriver.gecko.driver", "C:\\geckodriver.exe");  //gecko is required for Selenium 3
+							FirefoxOptions firefoxOptions = new FirefoxOptions();
+							firefoxOptions.setBinary(firefoxBinary);
+							FirefoxDriver fdriver = new FirefoxDriver(firefoxOptions);
+							this.driver=fdriver;				        
+							break;
 					default:						
 							//logger.log(LogStatus.INFO,"Invalid Browser specified."); //JOptionPane.showMessageDialog(null,"Invalid Command.");	//No action and show a message box to the user, if required.
-							errormessage="Invalid Browser specified.";
+							errormessage="Invalid Browser type specified.";
 							exceptionerror=true;						
 				}
 				if (parametervalue.equals("") || parametervalue.equals(null)) //validate that parameter value is valid
@@ -105,6 +148,7 @@ public void main(String tcid, String tc_desc, String stepid, String step_desc, S
 					f.setVisible(false);
 					f.dispose();
 					driver.get("https://"+parametervalue);
+	
 					driver.manage().window().maximize();
 					driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
 				}
@@ -265,13 +309,17 @@ public void main(String tcid, String tc_desc, String stepid, String step_desc, S
 				{
 					switch (locatortype)
 					{
-						case "ID": driver.findElement(By.id(locatorvalue)).click();//click.clickIdObject(locatorvalue, driver);
+						case "ID": 
+							//driver.findElement(By.id(locatorvalue)).click();//click.clickIdObject(locatorvalue, driver);
+						//((JavascriptExecutor)driver).executeScript("arguments[0].cli‌​ck()", driver.findElement(By.id(locatorvalue)));
+					
+						driver.findElement(By.id(locatorvalue)).sendKeys(Keys.ENTER);     // click not working with IE so sendkeys
 						break;
-						case "Xpath": driver.findElement(By.xpath(locatorvalue)).click();
+						case "Xpath": driver.findElement(By.xpath(locatorvalue)).sendKeys(Keys.ENTER);
 						break;
-						case "Name": driver.findElement(By.name(locatorvalue)).click();
+						case "Name": driver.findElement(By.name(locatorvalue)).sendKeys(Keys.ENTER);
 						break;
-						case "CssSelector": driver.findElement(By.cssSelector(locatorvalue)).click();
+						case "CssSelector": driver.findElement(By.cssSelector(locatorvalue)).sendKeys(Keys.ENTER);
 						break;
 						default:
 							//logger.log(LogStatus.INFO,"Invalid or No Locator type specified for the object to click."); //JOptionPane.showMessageDialog(null,"Invalid Command.");	//No action and show a message box to the user, if required.
@@ -307,7 +355,7 @@ public void main(String tcid, String tc_desc, String stepid, String step_desc, S
 				break;
 			}	
 			
-			case "Pause: Delay Execution in Seconds":
+			case "Pause: Delay Execution in Seconds (parameter value)":
 			{
 				long sleeptimeinsec= Long.parseLong(parametervalue+"000");  //convert string to long				
 				Thread.sleep(sleeptimeinsec);	
@@ -316,6 +364,7 @@ public void main(String tcid, String tc_desc, String stepid, String step_desc, S
 			case "Browser: Close": 
 			{
 				driver.close();
+				
 				//logger.log(LogStatus.INFO,"Test Case - "+tcid+"("+tc_desc+") executed.");
 				break;
 			}
@@ -596,7 +645,7 @@ public void progressBar()
 	//Border border = BorderFactory.createTitledBorder("Launching...");
 	///progressBar.setBorder(border);
 	content.add(progressBar, BorderLayout.NORTH);
-	f.setSize(400, 100);
+	f.setSize(600, 100);
 	f.setAlwaysOnTop(true);
 	f.setLocationRelativeTo(null);
 }

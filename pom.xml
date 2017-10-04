@@ -5,8 +5,9 @@
   <version>0.0.1-SNAPSHOT</version>
  
   <properties>
-	  <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-	  <log4j.version>1.2.17</log4j.version>	  		
+	  	<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	  	<log4j.version>1.2.17</log4j.version>	 
+	  	
   </properties>
  <build>
      
@@ -21,7 +22,7 @@
         </configuration>
       </plugin>      
       
-      <plugin>          
+      <!-- plugin>          
 		     <groupId>org.apache.maven.plugins</groupId>
 		    <artifactId>maven-assembly-plugin</artifactId>
 		    <version>3.1.0</version>
@@ -46,7 +47,7 @@
             </goals>
           </execution>
         </executions>
-      </plugin>
+      </plugin-->
   
            
     </plugins>   
@@ -67,19 +68,21 @@
   	<dependency>
   		<groupId>org.seleniumhq.selenium</groupId>
   		<artifactId>selenium-java</artifactId>
-  		<version>3.4.0</version>
+  		<version>3.6.0</version>
   	</dependency>
   	<!-- https://mvnrepository.com/artifact/org.seleniumhq.selenium/selenium-api -->
 	<dependency>
     	<groupId>org.seleniumhq.selenium</groupId>
     	<artifactId>selenium-api</artifactId>
-    	<version>3.4.0</version>
+    	<version>3.6.0</version>
 	</dependency>
 	<dependency>
     	<groupId>org.seleniumhq.selenium</groupId>
     	<artifactId>selenium-server</artifactId>
-    	<version>3.4.0</version>
+    	<version>3.6.0</version>
 	</dependency>
+  	<!-- https://mvnrepository.com/artifact/org.seleniumhq.selenium/selenium-firefox-driver -->
+
   	
   	<dependency>
   		<groupId>org.testng</groupId>
@@ -93,11 +96,27 @@
   		<version>3.16</version>
   		<scope>test</scope>
   	</dependency>
-  	<!-- dependency>
-  		<groupId>io.appium</groupId>
-  		<artifactId>java-client</artifactId>
-  		<version>4.1.2</version>
-  	</dependency-->
+  	<!-- https://mvnrepository.com/artifact/io.selendroid/selendroid-standalone -->
+	<dependency>
+	    <groupId>io.selendroid</groupId>
+	    <artifactId>selendroid-standalone</artifactId>
+	    <version>0.17.0</version>
+	    <scope>test</scope>
+	</dependency>
+	<!-- https://mvnrepository.com/artifact/io.selendroid/selendroid-server -->
+	<dependency>
+	    <groupId>io.selendroid</groupId>
+	    <artifactId>selendroid-server</artifactId>
+	    <version>0.17.0</version>
+	</dependency>
+	
+  	<!-- https://mvnrepository.com/artifact/io.selendroid/selendroid-client -->
+	<dependency>
+	    <groupId>io.selendroid</groupId>
+	    <artifactId>selendroid-client</artifactId>
+	    <version>0.17.0</version>
+	</dependency>
+  	
   	<dependency>
   		<groupId>org.apache.maven.surefire</groupId>
   		<artifactId>surefire-api</artifactId>
