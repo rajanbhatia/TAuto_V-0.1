@@ -41,7 +41,7 @@ public class AppiumDriverBase {
     //initializing driver object
     try {
 		//driver = new SelendroidDriver(new URL("http://127.0.0.1:4723/wd/hub"), caps);
-    	driver = new SelendroidDriver(new URL("http://www.google.com"), caps);
+    	driver = new SelendroidDriver(new URL("http://127.0.0.1:4723/wd/hub"), caps);
 	} catch (Exception e) {
 		// TODO Auto-generated catch block
 		e.getMessage();

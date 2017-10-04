@@ -115,6 +115,7 @@ public void main(String tcid, String tc_desc, String stepid, String step_desc, S
 							break;**/
 					case "Chrome (Non-GUI)":
 							//*** Headless ***//
+							System.setProperty("webdriver.chrome.driver", System.getProperty("user.dir")+"/drivers/chromedriver.exe");
 							ChromeOptions chromeOptions = new ChromeOptions();
 					        chromeOptions.addArguments("--headless");
 					        chromeOptions.addArguments("--disable-gpu");  //disable GPU accelerator abd it doesn't work properly in headless mode           
@@ -125,6 +126,7 @@ public void main(String tcid, String tc_desc, String stepid, String step_desc, S
 					        break;				        
 					case "Firefox (Non-GUI)":
 					        /** Headless **/
+							FirefoxDriverManager.getInstance().setup();	
 							FirefoxBinary firefoxBinary = new FirefoxBinary();
 							firefoxBinary.addCommandLineOptions("--headless");
 							//System.setProperty("webdriver.gecko.driver", "C:\\geckodriver.exe");  //gecko is required for Selenium 3
