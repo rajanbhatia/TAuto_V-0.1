@@ -10,9 +10,8 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 public class ExcelDataConfig {
 	
-	XSSFWorkbook wbxlsx;    //Global Variable. It will work for both xls and xlsx.
-	XSSFSheet sheetxlsx;	//Global Variable
-	
+	public XSSFWorkbook wbxlsx;    //Global Variable. It will work for both xls and xlsx.
+	public XSSFSheet sheetxlsx;	//Global Variable	
 	
 	//Open Excel WorkBook
 	public ExcelDataConfig(String excelpath) // Constructor

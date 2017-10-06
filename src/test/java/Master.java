@@ -2,22 +2,17 @@
 import static org.testng.Assert.assertTrue;
 import io.github.bonigarcia.wdm.FirefoxDriverManager;
 
-import java.awt.BorderLayout;
-import java.awt.Container;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Method;
-import java.util.concurrent.TimeUnit;
-import java.util.logging.LogManager;
-import java.util.logging.Logger;
 
-import javax.swing.JFrame;
-import javax.swing.JProgressBar;
+
+import java.util.Set;
+import java.util.concurrent.TimeUnit;
+
 
 import org.openqa.selenium.By;
-import org.openqa.selenium.JavascriptExecutor;
+
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.WebDriver;
+
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxBinary;
@@ -25,38 +20,29 @@ import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.ie.InternetExplorerDriver;
 import org.openqa.selenium.ie.InternetExplorerOptions;
-import org.openqa.selenium.safari.SafariDriver;
-import org.openqa.selenium.support.ui.Select;
-import org.testng.AssertJUnit;
-import org.testng.ITestResult;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.DataProvider;
-import org.testng.annotations.ITestAnnotation;
-import org.testng.annotations.Test;
-import org.testng.internal.annotations.IAnnotationTransformer;
-import org.testng.internal.annotations.ITest;
 
-import com.relevantcodes.extentreports.ExtentTest;
+import org.openqa.selenium.support.ui.Select;
+
+import org.testng.ITestResult;
+
+import org.testng.annotations.AfterMethod;
+
+import org.testng.annotations.DataProvider;
+
+import org.testng.annotations.Test;
+
 import com.relevantcodes.extentreports.LogStatus;
 
 
-public class Master extends BaseClass //implements IAnnotationTransformer 
+public class Master extends BaseClass // implements ITestNGListener
 {
-
-	
-	
-
-	///Object[][] teststeps = new Object[3][8];	 
-	
-	
+	Set<String> beforepopup;
+	String winhandlebefore;
 @Test(dataProvider = "TestSteps")		//, invocationCount=invocationcount) //invocationCount set at run time
 public void main(String tcid, String tc_desc, String stepid, String step_desc, String command, String locatortype, String locatorvalue, String testdata) //, String result, String error)
 {	
 	try
-	{	 	
-		///teststeps[0][0]=tcid;teststeps[0][0]=tcid;teststeps[0][0]=tcid;teststeps[0][0]=tcid;teststeps[0][0]=tcid;teststeps[0][0]=tcid;teststeps[0][0]=tcid;
+	{			
 		//logger = ReportScreenshotUtility.report.startTest("Automation Run: Testcase- "+tcid+", Teststep- "+stepid);  //To log every step on the left panel
 		exceptionerror=false;	   //ExceptionError flag to capture errors and log to the logger report   
 		stepdescription=step_desc;
@@ -147,8 +133,7 @@ public void main(String tcid, String tc_desc, String stepid, String step_desc, S
 				{
 					f.setVisible(false);
 					f.dispose();
-					driver.get("https://"+testdata);
-	
+					driver.get("https://"+testdata);	
 					driver.manage().window().maximize();
 					driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
 				}
@@ -445,7 +430,36 @@ public void main(String tcid, String tc_desc, String stepid, String step_desc, S
 			{
 				/// DO Nothing
 				break;
-			}							
+			}	
+			case "Browser: Save Attributes (before pop-up window)":
+			{
+				winhandlebefore = driver.getWindowHandle(); 
+				// get all the window handles before the popup window appears
+				beforepopup = driver.getWindowHandles();
+				break;
+			}
+			case "Browser: Switch to new browser (pop-up window)":
+			{
+				// get all the window handles after the popup window appears
+				Set<String> afterPopup = driver.getWindowHandles();
+
+				// remove all the handles from before the popup window appears
+				afterPopup.removeAll(beforepopup);
+
+				// there should be only one window handle left
+				if(afterPopup.size() == 1) 
+				{
+				     driver.switchTo().window((String)afterPopup.toArray()[0]);
+				}	    
+				break;
+			}
+			case "Switch back to old browser":
+			{
+				driver.close();
+				driver.switchTo().window(winhandlebefore); 
+				break;
+			}
+			
 			default: 
 			{
 				errormessage="Invalid or No command specified."; //JOptionPane.showMessageDialog(null,"Invalid Command.");	//No action and show a message box to the user, if required.
@@ -491,60 +505,50 @@ public Object[][] readTestCases() throws Exception   // Load Data Excel
 			}**/
 		}					
 	}
-	System.out.println("Data"+invocationcount);
+
 	return testcasesdata;
 }
 
 @AfterMethod   //executed after every method. Creating to capture the results of Failure.
 public void tearD(ITestResult result) throws Exception
 {
- if(ITestResult.FAILURE==result.getStatus() || (exceptionerror.equals(true)))  //Check if Test case has failed
- {
- 	 //String screenshot_path = ReportScreenshotUtility.captureScreenshot(driver,"/test-output/screenshots/",result.getName());   //Take screenshot if Test Case fails
-	 String screenshot_path = ReportScreenshotUtility.captureScreenshot(driver,executionreportpath,result.getName());   //Take screenshot if Test Case fails and at the same location where execution report is saved.
- 	 String image=logger.addScreenCapture(screenshot_path);
- 	 logger.log(LogStatus.FAIL, "Failed", image);
- 	 if(ITestResult.FAILURE==result.getStatus())		logger.log(LogStatus.FAIL, "Step ID: "+stepid+", Step Desc: "+stepdescription+": FAILED. Error Message: "+ result.getThrowable());
- 	 if (exceptionerror==true)  logger.log(LogStatus.FAIL, "Step ID: "+stepid+", Step Desc: "+stepdescription+": FAILED. Error Message: "+ errormessage);
- }
- else if (ITestResult.SUCCESS==result.getStatus() && (exceptionerror.equals(false)))   //Check if Test case has passed
- {
- 	 if (command.equals("DO NOT EXECUTE THIS STEP")) logger.log(LogStatus.PASS, "Step ID: "+stepid+", Step Desc: "+stepdescription+": SKIPPED");  //to capture the non-executed step in the report.
- 	 else logger.log(LogStatus.PASS, "Step ID: "+stepid+", Step Desc: "+stepdescription+": PASSED");	
- }
- else if (ITestResult.SKIP==result.getStatus())  //Check if Test case has passed
- {
-	logger.log(LogStatus.SKIP, "Step ID: "+stepid+", Step Desc: "+stepdescription+": SKIPPED. "+result.getThrowable());	
- }		
-	 ReportScreenshotUtility.report.endTest(logger);
-	 ReportScreenshotUtility.report.flush();
+	 if(ITestResult.FAILURE==result.getStatus() || (exceptionerror.equals(true)))  //Check if Test case has failed
+	 {
+	 	 //String screenshot_path = ReportScreenshotUtility.captureScreenshot(driver,"/test-output/screenshots/",result.getName());   //Take screenshot if Test Case fails
+		 String screenshot_path = ReportScreenshotUtility.captureScreenshot(driver,executionreportpath,result.getName());   //Take screenshot if Test Case fails and at the same location where execution report is saved.
+	 	 String image=logger.addScreenCapture(screenshot_path);
+	 	 logger.log(LogStatus.FAIL, "Failed", image);
+	 	 if(ITestResult.FAILURE==result.getStatus())		logger.log(LogStatus.FAIL, "Step ID: "+stepid+", Step Desc: "+stepdescription+": FAILED. Error Message: "+ result.getThrowable());
+	 	 if (exceptionerror==true)  logger.log(LogStatus.FAIL, "Step ID: "+stepid+", Step Desc: "+stepdescription+": FAILED. Error Message: "+ errormessage);
+	 }
+	 else if (ITestResult.SUCCESS==result.getStatus() && (exceptionerror.equals(false)))   //Check if Test case has passed
+	 {
+	 	 if (command.equals("DO NOT EXECUTE THIS STEP")) logger.log(LogStatus.PASS, "Step ID: "+stepid+", Step Desc: "+stepdescription+": SKIPPED");  //to capture the non-executed step in the report.
+	 	 else logger.log(LogStatus.PASS, "Step ID: "+stepid+", Step Desc: "+stepdescription+": PASSED");	
+	 }
+	 else if (ITestResult.SKIP==result.getStatus())  //Check if Test case has passed
+	 {
+		logger.log(LogStatus.SKIP, "Step ID: "+stepid+", Step Desc: "+stepdescription+": SKIPPED. "+result.getThrowable());	
+	 }		
+		 ReportScreenshotUtility.report.endTest(logger);
+		 ReportScreenshotUtility.report.flush();
+		 
+		
 }
 
 
 
-
-
-/**@Override   
+/**
+@Override   
 public void transform(ITestAnnotation annotation, Class testClass,
 		Constructor testConstructor, Method testMethod)   //This method is getting first call and listener class is mentioned in TestNG. 
 	{
 	
 	
-
-	if (preferencesdata[4][0]!="")		invocationcount=Integer.parseInt((String) preferencesdata[4][0]);
-	else								invocationcount = 1;					//invocationCount
-	
-
-	if ("main".equals(testMethod.getName())) 
-		{
-			 
-			annotation.setInvocationCount(invocationcount);
-		}
-	System.out.println("O"+invocationcount);
 	}
+
+
 **/
-
-
 
 /**
 public void browserSettings(WebDriver driver, String testdata)
@@ -556,6 +560,10 @@ public void browserSettings(WebDriver driver, String testdata)
 
 }
 **/
+
+
+
+
 
 public void checkLocParamBlankValues(String locatorvalue, String testdata)
 {
@@ -592,6 +600,8 @@ private boolean isElementPresent(By by)
     		return false;
     	}
 	}
+
+
 
 
 

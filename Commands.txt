@@ -1,5 +1,8 @@
 Browser: Open (test data)
 Browser: Close
+Browser: Save Attributes (before pop-up window)
+Browser: Switch to new browser (pop-up window)
+Browser: Switch back to old browser
 Button: Validate Text (locator value, test data)
 Caption/Text: Validate Text (locator value, test data)
 Checkbox: Validate if Selected (locator value)

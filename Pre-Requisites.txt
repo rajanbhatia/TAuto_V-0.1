@@ -3,4 +3,11 @@
 - Install git (if using) *
 - Make sure Enable Protected Mode has same setting for all under Tools->Options->Security for IE.
 
+- 'Browser: Save Attributes' is a pre-req for 'Browser: Switch to new browser (pop-up window)' and 'Browser: Switch back to old browser'
+	Example -> 	Browser: Save Attributes
+			Object: Click (locator value)
+			Browser: Switch to new browser (pop-up window)
+			-- Do some steps--
+			Browser: Switch back to old browser		
+
 Notes- Don't mention http:// for URLs.

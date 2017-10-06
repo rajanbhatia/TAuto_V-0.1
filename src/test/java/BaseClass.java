@@ -30,7 +30,6 @@ public class BaseClass {
 	String stepdescription, command, stepid;
 	protected JFrame f = new JFrame("Starting Test Execution...");
 	
-
 	
 	@BeforeClass(alwaysRun=true)
 	public void setUp() throws Exception 
@@ -82,7 +81,7 @@ public class BaseClass {
 		//driver = new InternetExplorerDriver();
 	    //baseUrl = "http://www.waikato.ac.nz/";
 		//driver = new FirefoxDriver();
-		System.out.println("setup"+invocationcount);
+
 	}
 	
 	@AfterClass(alwaysRun=true)

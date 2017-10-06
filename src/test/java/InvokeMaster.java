@@ -1,12 +1,15 @@
 
 import org.testng.TestNG;
-public class Main {		
+public class InvokeMaster {		
 		public static void main(String[] args) {							
 				//TestListenerAdapter tla = new TestListenerAdapter();
 				TestNG testng = new TestNG();
 			
 				testng.setTestClasses(new Class[] { Master.class });
-				//testng.setAnnotationTransformer
+				//testng.setAnnotationTransformer(new Master());
+				//testng.addListener(new Master());
+					
+
 				//testng.addListener(new ITestNGListener() {		});
 				testng.run();
 			
