@@ -2,17 +2,22 @@
 import static org.testng.Assert.assertTrue;
 import io.github.bonigarcia.wdm.FirefoxDriverManager;
 
-
-
+import java.awt.BorderLayout;
+import java.awt.Container;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.LogManager;
+import java.util.logging.Logger;
 
+import javax.swing.JFrame;
+import javax.swing.JProgressBar;
 
 import org.openqa.selenium.By;
-
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.NoSuchElementException;
-
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxBinary;
@@ -20,22 +25,29 @@ import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.ie.InternetExplorerDriver;
 import org.openqa.selenium.ie.InternetExplorerOptions;
-
 import org.openqa.selenium.support.ui.Select;
-
+import org.testng.AssertJUnit;
+import org.testng.IAnnotationTransformer;
+import org.testng.IAnnotationTransformer3;
 import org.testng.ITestResult;
-
+import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
-
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
-
+import org.testng.annotations.IConfigurationAnnotation;
+import org.testng.annotations.IDataProviderAnnotation;
+import org.testng.annotations.IFactoryAnnotation;
+import org.testng.annotations.IListenersAnnotation;
+import org.testng.annotations.ITestAnnotation;
 import org.testng.annotations.Test;
 
+import com.relevantcodes.extentreports.ExtentTest;
 import com.relevantcodes.extentreports.LogStatus;
 
 
-public class Master extends BaseClass // implements ITestNGListener
+public class Master extends BaseClass implements IAnnotationTransformer
 {
+
 	Set<String> beforepopup;
 	String winhandlebefore;
 @Test(dataProvider = "TestSteps")		//, invocationCount=invocationcount) //invocationCount set at run time
@@ -145,6 +157,7 @@ public void main(String tcid, String tc_desc, String stepid, String step_desc, S
 				checkLocParamBlankValues(locatorvalue, testdata);  //check null or blank values and set the exceptionerror and exceptionmessage text.
 				if (exceptionerror.equals(false))  //Execute it only if the values are valid
 				{
+					
 					switch (locatortype)
 					{
 						case "ID":						
@@ -483,8 +496,9 @@ public Object[][] readTestCases() throws Exception   // Load Data Excel
 	//sheetnumber = sheetnumber; // As user will input the exact serial number and the index starts from 0.
 ///	String excelpath=propertyconfig.getExcelSheetPath();
   	//ExcelDataConfig excelconfig = new ExcelDataConfig("C:\\Users\\rbhatia\\Google Drive\\Project\\Automation\\ZAuto\\TestCases.xlsx");	  	  	
-  	ExcelDataConfig excelconfig = new ExcelDataConfig(testcasepath);
-	int rows=excelconfig.getRowCount(sheetnumber);  //rows in the first sheet
+	ExcelDataConfig excelconfig = new ExcelDataConfig(testcasepath);
+  	
+  	int rows=excelconfig.getRowCount(sheetnumber);  //rows in the first sheet
 	int cols=excelconfig.getColCount(sheetnumber);  //cols in the first sheet
 	Object[][] testcasesdata = new Object[rows-1][cols];	
 	for(int i=0;i<rows-1;i++)   //Initializing Array to rows-1. First row is just headings and make sure every column cell has a text
@@ -537,19 +551,6 @@ public void tearD(ITestResult result) throws Exception
 }
 
 
-
-/**
-@Override   
-public void transform(ITestAnnotation annotation, Class testClass,
-		Constructor testConstructor, Method testMethod)   //This method is getting first call and listener class is mentioned in TestNG. 
-	{
-	
-	
-	}
-
-
-**/
-
 /**
 public void browserSettings(WebDriver driver, String testdata)
 {
@@ -586,11 +587,6 @@ public void checkLocBlankValue(String locatorvalue)
 }
 
 
-
-
-
-
-
 private boolean isElementPresent(By by) 
 	{
     try {
@@ -602,8 +598,30 @@ private boolean isElementPresent(By by)
 	}
 
 
-
-
+@Override
+public void transform(ITestAnnotation annotation, Class testClass,
+		Constructor testConstructor, Method testMethod) 
+	{
+		// TODO Auto-generated method stub
+		ExcelDataConfig excelreadpreferences = new ExcelDataConfig(System.getProperty("user.dir")+"/Preferences.xlsx");	
+		//preferencesdata = new Object[5][1];
+		for(int i=0;i<5;i++)   //Initializing Array to rows-1. First row is just headings and make sure every column cell has a text
+		{
+			for(int j=0;j<1;j++)  //Columns value is one more than the index so less than sign
+			{
+				preferencesdata[4][0]=excelreadpreferences.getData(0, 5, 1);  //Picking data from the 2nd row in excel sheet, so i+1
+				
+			}					
+		}
+									executionreportpath = "";					//Report path local directory
+		if (preferencesdata[4][0]!="")		invocationcount = Integer.parseInt((String) preferencesdata[4][0]);
+		else								invocationcount = 1;					//Report path local directory
+		if ("main".equals(testMethod.getName())) 
+		{
+		      annotation.setInvocationCount(invocationcount);
+		}
+	
+	}
 
 }
 

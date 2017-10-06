@@ -1,7 +1,9 @@
 import java.io.File;
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
 import org.apache.poi.openxml4j.opc.OPCPackage;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.DataFormatter;
@@ -11,7 +13,8 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 public class ExcelDataConfig {
 	
 	public XSSFWorkbook wbxlsx;    //Global Variable. It will work for both xls and xlsx.
-	public XSSFSheet sheetxlsx;	//Global Variable	
+	public XSSFSheet sheetxlsx;	//Global Variable
+	OPCPackage opcPackage;
 	
 	//Open Excel WorkBook
 	public ExcelDataConfig(String excelpath) // Constructor
@@ -19,8 +22,9 @@ public class ExcelDataConfig {
 		try 
 		{					
 			//FileInputStream fis = new FileInputStream(new File(excelpath));  // Load the excel sheet in the form of Bytes		 
-			OPCPackage opcPackage = OPCPackage.open(new File(excelpath)); // To speed up... ??
+			opcPackage = OPCPackage.open(new File(excelpath)); // To speed up... ??
 			wbxlsx = new XSSFWorkbook(opcPackage);
+			
 			/**
 			///wb = WorkbookFactory.create(new File(excelpath));
 			  
@@ -45,6 +49,18 @@ public class ExcelDataConfig {
 			System.out.println(e.getMessage());
 		}		
 	}
+	
+/**	public void closeOPC()
+	{
+		try {
+			//sheetxlsx.
+			wbxlsx.close();
+			opcPackage.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}**/
 	
 	//Get data from Excel	
 	public String getData(int sheetnumber, int row, int column)
