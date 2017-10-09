@@ -12,6 +12,7 @@ Dropdown: Validate Value (locator value, test data)
 Key: Press (Enter/Return/Tab/Escape) (locator value, test data)
 Object: Click (locator value)
 Object: Validate if Present (locator value)
+
 Pause: Delay Execution in Seconds (test data)
 Radiobutton: Validate if Selected (locator value)
 Textbox: Enter Text (locator value, test data)

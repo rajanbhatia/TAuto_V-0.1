@@ -6,6 +6,7 @@ import java.awt.BorderLayout;
 import java.awt.Container;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
+import java.util.Calendar;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.LogManager;
@@ -50,7 +51,9 @@ public class Master extends BaseClass implements IAnnotationTransformer
 
 	Set<String> beforepopup;
 	String winhandlebefore;
-@Test(dataProvider = "TestSteps")		//, invocationCount=invocationcount) //invocationCount set at run time
+	
+	
+@Test(dataProvider = "TestSteps")//, threadPoolSize=2)		//, invocationCount=invocationcount) //invocationCount set at run time
 public void main(String tcid, String tc_desc, String stepid, String step_desc, String command, String locatortype, String locatorvalue, String testdata) //, String result, String error)
 {	
 	try
@@ -60,6 +63,14 @@ public void main(String tcid, String tc_desc, String stepid, String step_desc, S
 		stepdescription=step_desc;
 		this.stepid=stepid;
 		this.command=command;
+		
+		//Auto parameterize test data every time for the textbox enter commands only.
+		if (multipleExecutionsDifferentTestData.equals(true) && (command.equals("Textbox: Enter Text (locator value, test data)"))) 
+		{
+				Calendar cal = Calendar.getInstance();
+				testdata=mData(testdata, cal);
+		}
+	
 		
 		//System.out.println(tcid + " " + tc_desc + " " + stepid + " " + step_desc + " " + command  + " " + locatortype  + " " + locatorvalue + " " + testdata + " " + "\n");
 		switch (command)
@@ -605,23 +616,46 @@ public void transform(ITestAnnotation annotation, Class testClass,
 		// TODO Auto-generated method stub
 		ExcelDataConfig excelreadpreferences = new ExcelDataConfig(System.getProperty("user.dir")+"/Preferences.xlsx");	
 		//preferencesdata = new Object[5][1];
-		for(int i=0;i<5;i++)   //Initializing Array to rows-1. First row is just headings and make sure every column cell has a text
+		/**for(int i=0;i<5;i++)   //Initializing Array to rows-1. First row is just headings and make sure every column cell has a text
 		{
 			for(int j=0;j<1;j++)  //Columns value is one more than the index so less than sign
 			{
 				preferencesdata[4][0]=excelreadpreferences.getData(0, 5, 1);  //Picking data from the 2nd row in excel sheet, so i+1
 				
 			}					
-		}
-									executionreportpath = "";					//Report path local directory
-		if (preferencesdata[4][0]!="")		invocationcount = Integer.parseInt((String) preferencesdata[4][0]);
-		else								invocationcount = 1;					//Report path local directory
+		}**/
+		preferencesdata[4][0]=excelreadpreferences.getData(0, 5, 1); //InvocationCount same data multiple executions  //Picking data from the 2nd row in excel sheet, so i+1
+		preferencesdata[5][0]=excelreadpreferences.getData(0, 6, 1); //InvocationCount different data multiple executions
+		//Same data multiple execution
+		if (preferencesdata[4][0]!=""  && preferencesdata[4][0]!="0")		invocationcount = Integer.parseInt((String) preferencesdata[4][0]);
+		else
+			{
+				if (preferencesdata[5][0]!="" && preferencesdata[5][0]!="0")	
+				{	
+					invocationcount = Integer.parseInt((String) preferencesdata[5][0]); //Different test data each time for multiple executions. It can't work with multiple runs and same test data
+				}
+				else
+				{									//don't need to do anything if nothing mentioned
+					invocationcount = 1;					// This will work if nothing is mentioned for multiple test runs
+				}	
+			}	
+			
 		if ("main".equals(testMethod.getName())) 
 		{
-		      annotation.setInvocationCount(invocationcount);
+		      annotation.setInvocationCount(invocationcount);		      
 		}
+		//Different data multiple execution
+		
+		
 	
 	}
+
+public String mData(String string, Calendar cal)
+{
+	//string=new Timestamp(System.currentTimeMillis()).getTime()+""+cal.get(Calendar.DATE)+string;
+	string=System.currentTimeMillis()+""+cal.get(Calendar.DATE)+string;
+	return string;
+}
 
 }
 

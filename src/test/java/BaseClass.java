@@ -25,10 +25,11 @@ public class BaseClass {
 	protected String executionreportpath, errormessage, testcasepath, browsername;;
 	protected int sheetnumber, invocationcount;	//invcationcount to run multiple times for same set of test data
 	
-	protected Object preferencesdata[][]=new Object[5][1];
+	protected Object preferencesdata[][]=new Object[6][1];
 	protected Boolean exceptionerror;
 	protected String stepdescription, command, stepid;
 	protected JFrame f = new JFrame("Starting Test Execution...");
+	protected Boolean multipleExecutionsDifferentTestData=false;
 @BeforeClass(alwaysRun=true)
 public void setUp() throws Exception 
 {		
@@ -39,22 +40,26 @@ public void setUp() throws Exception
 	globalLogger.setLevel(java.util.logging.Level.OFF);	
 	ExcelDataConfig excelreadpreferences = new ExcelDataConfig(System.getProperty("user.dir")+"/Preferences.xlsx");	
 	//preferencesdata = new Object[5][1];
-	for(int i=0;i<5;i++)   //Initializing Array to rows-1. First row is just headings and make sure every column cell has a text
+	for(int i=0;i<6;i++)   //Initializing Array to rows-1. First row is just headings and make sure every column cell has a text
 	{
 		for(int j=0;j<1;j++)  //Columns value is one more than the index so less than sign
 		{
 			preferencesdata[i][j]=excelreadpreferences.getData(0, i+1, j+1);  //Picking data from the 2nd row in excel sheet, so i+1
-			
 		}					
 	}
 	testcasepath = (String) preferencesdata[0][0];
 	sheetnumber =  Integer.parseInt((String) preferencesdata[1][0]);
 	//check null chrome browser parameter
-	if (preferencesdata[2][0]!="")  	browsername = (String) preferencesdata[2][0];  
+	if (preferencesdata[2][0]!="" && preferencesdata[2][0]!="0")  	browsername = (String) preferencesdata[2][0];  
 	else								browsername = "Chrome";						//Default browser is Chrome, if none specified
 	//check null report path parameter
-	if (preferencesdata[3][0]!="")		executionreportpath = (String) preferencesdata[3][0];
+	if (preferencesdata[3][0]!="" && preferencesdata[3][0]!="0")		executionreportpath = (String) preferencesdata[3][0];
 	else								executionreportpath = "";					//Report path local directory
+	
+	if (preferencesdata[5][0]!="" && preferencesdata[5][0]!="0" && preferencesdata[5][0]!=null )	
+	{	
+		multipleExecutionsDifferentTestData = true;
+	}
 	//Setup Logging off - First one seems to be working
 	
 	
