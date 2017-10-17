@@ -4,6 +4,7 @@ import java.util.logging.LogManager;
 import java.util.logging.Logger;
 
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JProgressBar;
 
 import org.openqa.selenium.WebDriver;
@@ -38,7 +39,7 @@ public void setUp() throws Exception
 	LogManager.getLogManager().reset();
 	Logger globalLogger = Logger.getLogger(java.util.logging.Logger.GLOBAL_LOGGER_NAME);
 	globalLogger.setLevel(java.util.logging.Level.OFF);	
-	ExcelDataConfig excelreadpreferences = new ExcelDataConfig(System.getProperty("user.dir")+"/Preferences.xlsx");	
+	ExcelDataConfig excelreadpreferences = new ExcelDataConfig(System.getProperty("user.dir")+"/Preferences.xlsx",0);	
 	//preferencesdata = new Object[5][1];
 	for(int i=0;i<6;i++)   //Initializing Array to rows-1. First row is just headings and make sure every column cell has a text
 	{
@@ -47,52 +48,60 @@ public void setUp() throws Exception
 			preferencesdata[i][j]=excelreadpreferences.getData(0, i+1, j+1);  //Picking data from the 2nd row in excel sheet, so i+1
 		}					
 	}
-	testcasepath = (String) preferencesdata[0][0];
-	
-	if (((String) preferencesdata[1][0]).matches("[0-9]+") && ((String) preferencesdata[1][0]).length() >= 0)	//check for integer values only
+	if (((String) preferencesdata[0][0]).trim().length() > 0) //check there is at least one character
 	{
-		sheetnumber =  Integer.parseInt((String) preferencesdata[1][0]);
-	}
-	else	sheetnumber = 0; 	// default is 0
+			testcasepath = (String) preferencesdata[0][0];
 			
-	
-		
-	//check null chrome browser parameter
-	if (!preferencesdata[2][0].equals("") && !preferencesdata[2][0].equals("0"))  	browsername = (String) preferencesdata[2][0];  
-	else								browsername = "Chrome";						//Default browser is Chrome, if none specified
-	//check null report path parameter
-	if (!preferencesdata[3][0].equals("") && !preferencesdata[3][0].equals("0"))		executionreportpath = (String) preferencesdata[3][0];
-	else								executionreportpath = "";					//Report path local directory
-	
-	if (!preferencesdata[5][0].equals("0") && ((String) preferencesdata[5][0]).matches("[0-9]+") && ((String) preferencesdata[5][0]).length() >= 1 )	
-	{	
-		multipleExecutionsDifferentTestData = true;
+			if (((String) preferencesdata[1][0]).matches("[0-9]+") && ((String) preferencesdata[1][0]).trim().length() > 0)	//check for integer values only
+			{
+				sheetnumber =  Integer.parseInt((String) preferencesdata[1][0]);
+			}
+			else	sheetnumber = 0; 	// default is 0			
+			
+				
+			//check null chrome browser parameter
+			if (!preferencesdata[2][0].equals("0") && ((String) preferencesdata[2][0]).trim().length() > 0)  	browsername = (String) preferencesdata[2][0];  
+			else								browsername = "Chrome";						//Default browser is Chrome, if none specified
+			//check null report path parameter
+			if (!preferencesdata[3][0].equals("0") && ((String) preferencesdata[3][0]).trim().length() > 0)		executionreportpath = (String) preferencesdata[3][0];
+			else								executionreportpath = "";					//Report path local directory
+			
+			if (!preferencesdata[5][0].equals("0") && ((String) preferencesdata[5][0]).matches("[0-9]+") && ((String) preferencesdata[5][0]).trim().length() > 0 )	
+			{	
+				multipleExecutionsDifferentTestData = true;
+			}
+			//Setup Logging off - First one seems to be working
+			
+			
+			/**Logger globalLogger = Logger.getLogger("global");
+			/**Handler[] handlers = globalLogger.getHandlers();
+			for(Handler handler : handlers) {
+			 globalLogger.removeHandler(handler);}
+			**/
+			//Logger.getLogger("");
+			
+		///	propertyconfig = new ConfigReader(); //Read the Config Property value
+			//System.setProperty("webdriver.gecko.driver", propertyconfig.getGeckoPath());  //gecko is required for Selenium 3
+		///	System.setProperty("webdriver.chrome.driver", propertyconfig.getChromePath());
+			///String app_url = JOptionPane.showInputDialog(null,"Enter Application URL"); //To create window
+		///	System.setProperty("webdriver.chrome.driver", "C:\\chromedriver.exe");
+		///	driver = new ChromeDriver();
+			///driver.get("https://"+app_url); // To open url in browse
+			//report = new ExtentReports(System.getProperty("user.dir")+ propertyconfig.getReportPath()); //Set the HTML Execution Report Path. Putting another parameter TRUE will overwrite the file everytime.
+			ReportScreenshotUtility.GetExtent(executionreportpath);
+			//ReportScreenshotUtility.report.loadConfig(new File(System.getProperty("user.dir")+"/src/main/resources/extent-config.xml")); //Load the config settings frot he report from xml.
+			
+			//driver = new InternetExplorerDriver();
+		    //baseUrl = "http://www.waikato.ac.nz/";
+			//driver = new FirefoxDriver();
 	}
-	//Setup Logging off - First one seems to be working
-	
-	
-	/**Logger globalLogger = Logger.getLogger("global");
-	/**Handler[] handlers = globalLogger.getHandlers();
-	for(Handler handler : handlers) {
-	 globalLogger.removeHandler(handler);}
-	**/
-	//Logger.getLogger("");
-	
-///	propertyconfig = new ConfigReader(); //Read the Config Property value
-	//System.setProperty("webdriver.gecko.driver", propertyconfig.getGeckoPath());  //gecko is required for Selenium 3
-///	System.setProperty("webdriver.chrome.driver", propertyconfig.getChromePath());
-	///String app_url = JOptionPane.showInputDialog(null,"Enter Application URL"); //To create window
-///	System.setProperty("webdriver.chrome.driver", "C:\\chromedriver.exe");
-///	driver = new ChromeDriver();
-	///driver.get("https://"+app_url); // To open url in browse
-	//report = new ExtentReports(System.getProperty("user.dir")+ propertyconfig.getReportPath()); //Set the HTML Execution Report Path. Putting another parameter TRUE will overwrite the file everytime.
-	ReportScreenshotUtility.GetExtent(executionreportpath);
-	//ReportScreenshotUtility.report.loadConfig(new File(System.getProperty("user.dir")+"/src/main/resources/extent-config.xml")); //Load the config settings frot he report from xml.
-	
-	//driver = new InternetExplorerDriver();
-    //baseUrl = "http://www.waikato.ac.nz/";
-	//driver = new FirefoxDriver();
-
+	else
+	{
+		//System.out.println("Invalid or unspecified test case path");
+		JOptionPane.showMessageDialog(null, "Test Case path not specified in the Preferences sheet.");
+		System.exit(1);
+		
+	}
 }
 	@AfterClass(alwaysRun=true)
 	public void tearDown() throws Exception 
@@ -120,7 +129,7 @@ public void setUp() throws Exception
 		///progressBar.setBorder(border);
 		content.add(progressBar, BorderLayout.NORTH);
 		f.setSize(600, 100);
-		f.setAlwaysOnTop(true);
+		//f.setAlwaysOnTop(true);
 		f.setLocationRelativeTo(null);
 	}
 	

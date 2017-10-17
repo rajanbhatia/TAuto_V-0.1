@@ -4,9 +4,12 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import javax.swing.JOptionPane;
+
 import org.apache.poi.openxml4j.opc.OPCPackage;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.DataFormatter;
+import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
@@ -17,13 +20,20 @@ public class ExcelDataConfig {
 	OPCPackage opcPackage;
 	
 	//Open Excel WorkBook
-	public ExcelDataConfig(String excelpath) // Constructor
+	public ExcelDataConfig(String excelpath, int sheetnumber) // Constructor
 	{
 		try 
 		{					
 			//FileInputStream fis = new FileInputStream(new File(excelpath));  // Load the excel sheet in the form of Bytes		 
 			opcPackage = OPCPackage.open(new File(excelpath)); // To speed up... ??
 			wbxlsx = new XSSFWorkbook(opcPackage);
+			sheetxlsx = wbxlsx.getSheetAt(sheetnumber);
+			Row row=sheetxlsx.getRow(0);
+			if (row==null)
+			{
+				JOptionPane.showMessageDialog(null, "No record/row data found in the excel sheet - "+excelpath);
+				System.exit(1);
+			}
 			
 			/**
 			///wb = WorkbookFactory.create(new File(excelpath));
@@ -46,7 +56,9 @@ public class ExcelDataConfig {
 				**/	
 		} 
 		catch (Exception e) {
-			System.out.println(e.getMessage());
+			JOptionPane.showMessageDialog(null, e.getMessage());
+			System.exit(1);
+			//System.out.println(e.getMessage());
 		}		
 	}
 	
@@ -79,7 +91,7 @@ public class ExcelDataConfig {
 		int row=0;
 		//if(fileExtensionName.equals(".xlsx"))		row = wbxlsx.getSheetAt(sheetIndex).getLastRowNum();
 		row = wbxlsx.getSheetAt(sheetIndex).getLastRowNum();
-		row++;
+		//row++;
 		return row;
 	}
 	

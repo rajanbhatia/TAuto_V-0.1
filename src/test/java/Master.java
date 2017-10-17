@@ -13,8 +13,10 @@ import java.util.logging.LogManager;
 import java.util.logging.Logger;
 
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JProgressBar;
 
+import org.apache.poi.ss.usermodel.Row;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.NoSuchElementException;
@@ -546,34 +548,38 @@ public void main(String tcid, String tc_desc, String stepid, String step_desc, S
 @DataProvider(name="TestSteps")  //Parameterizing @Test code for the Excel records
 public Object[][] readTestCases() throws Exception   // Load Data Excel  
 {	  		    
-	
+	Object[][] testcasesdata = new Object[0][0];
 	//sheetnumber = sheetnumber; // As user will input the exact serial number and the index starts from 0.
 ///	String excelpath=propertyconfig.getExcelSheetPath();
   	//ExcelDataConfig excelconfig = new ExcelDataConfig("C:\\Users\\rbhatia\\Google Drive\\Project\\Automation\\ZAuto\\TestCases.xlsx");	  	  	
-	ExcelDataConfig excelconfig = new ExcelDataConfig(testcasepath);
-  	
+	ExcelDataConfig excelconfig = new ExcelDataConfig(testcasepath, sheetnumber);
+		
   	int rows=excelconfig.getRowCount(sheetnumber);  //rows in the first sheet
 	int cols=excelconfig.getColCount(sheetnumber);  //cols in the first sheet
-	Object[][] testcasesdata = new Object[rows-1][cols];	
-	for(int i=0;i<rows-1;i++)   //Initializing Array to rows-1. First row is just headings and make sure every column cell has a text
+	if (rows>=0 && cols>=0) //atleast one , index 0
 	{
-	    for (int j=0;j<cols;j++)  //Columns value is one more than the index so less than sign
+		testcasesdata = new Object[rows][cols];	
+		for(int i=0;i<rows;i++)   //Initializing Array to rows-1. First row is just headings and make sure every column cell has a text
 		{
-			testcasesdata[i][j]=excelconfig.getData(sheetnumber, i+1, j);  //Picking data from the 2nd row in excel sheet, so i+1
-			
-			/**if (j==6)   //As DoB field is in the 7th col (6th index)
+		    for (int j=0;j<cols;j++)  //Columns value is one more than the index so less than sign
 			{
-				//Calling the function to change the date format from mm/dd/yy to dd/mm/yyyy//
-			//	dobforage[i]= (String) data[i][j];
-				String datevalue = (String) data[i][j]; 
-				String datechange = excelconfig.changeDateFormat(datevalue);  
-				data[i][j]=datechange;
-				 	
-				// -----------------------------------------------------------------     //		
-			}**/
-		}					
+				testcasesdata[i][j]=excelconfig.getData(sheetnumber, i+1, j);  //Picking data from the 2nd row in excel sheet, so i+1
+				
+				/**if (j==6)   //As DoB field is in the 7th col (6th index)
+				{
+					//Calling the function to change the date format from mm/dd/yy to dd/mm/yyyy//
+				//	dobforage[i]= (String) data[i][j];
+					String datevalue = (String) data[i][j]; 
+					String datechange = excelconfig.changeDateFormat(datevalue);  
+					data[i][j]=datechange;
+					 	
+					// -----------------------------------------------------------------     //		
+				}**/
+			}					
+		}
+	
+		
 	}
-
 	return testcasesdata;
 }
 
@@ -657,44 +663,44 @@ public void transform(ITestAnnotation annotation, Class testClass,
 		Constructor testConstructor, Method testMethod) 
 	{
 		// TODO Auto-generated method stub
-		ExcelDataConfig excelreadpreferences = new ExcelDataConfig(System.getProperty("user.dir")+"/Preferences.xlsx");	
-		//preferencesdata = new Object[5][1];
-		/**for(int i=0;i<5;i++)   //Initializing Array to rows-1. First row is just headings and make sure every column cell has a text
-		{
-			for(int j=0;j<1;j++)  //Columns value is one more than the index so less than sign
+		ExcelDataConfig excelreadpreferences = new ExcelDataConfig(System.getProperty("user.dir")+"/Preferences.xlsx",0);
+		
+		
+			//preferencesdata = new Object[5][1];
+			/**for(int i=0;i<5;i++)   //Initializing Array to rows-1. First row is just headings and make sure every column cell has a text
 			{
-				preferencesdata[4][0]=excelreadpreferences.getData(0, 5, 1);  //Picking data from the 2nd row in excel sheet, so i+1
-				
-			}					
-		}**/
-		preferencesdata[4][0]=excelreadpreferences.getData(0, 5, 1); //InvocationCount same data multiple executions  //Picking data from the 2nd row in excel sheet, so i+1
-		preferencesdata[5][0]=excelreadpreferences.getData(0, 6, 1); //InvocationCount different data multiple executions
-		//Same data multiple execution
-		//if (preferencesdata[4][0]!=""  && preferencesdata[4][0]!="0")		
-		System.out.println(((String) preferencesdata[4][0]).matches("[0-9]+"));
-		System.out.println(((String) preferencesdata[4][0]).length());
-		System.out.println(preferencesdata[4][0]);
-		if (((String) preferencesdata[4][0]).matches("[0-9]+") && ((String) preferencesdata[4][0]).length() >= 1 && !preferencesdata[4][0].equals("0")) // No need for this condition && !preferencesdata[4][0].equals(""))
-		{
-				invocationcount = Integer.parseInt((String) preferencesdata[4][0]);
-		}
-		else
-		{
-				if (!preferencesdata[5][0].equals("0") && ((String) preferencesdata[5][0]).matches("[0-9]+") && ((String) preferencesdata[5][0]).length() >= 1 )	// check for integer values only
-				{	
-					invocationcount = Integer.parseInt((String) preferencesdata[5][0]); //Different test data each time for multiple executions. It can't work with multiple runs and same test data
-				}
-				else
-				{									//don't need to do anything if nothing mentioned
-					invocationcount = 1;					// This will work if nothing is mentioned for multiple test runs
-				}	
-		}	
+				for(int j=0;j<1;j++)  //Columns value is one more than the index so less than sign
+				{
+					preferencesdata[4][0]=excelreadpreferences.getData(0, 5, 1);  //Picking data from the 2nd row in excel sheet, so i+1
+					
+				}					
+			}**/
+			preferencesdata[4][0]=excelreadpreferences.getData(0, 5, 1); //InvocationCount same data multiple executions  //Picking data from the 2nd row in excel sheet, so i+1
+			preferencesdata[5][0]=excelreadpreferences.getData(0, 6, 1); //InvocationCount different data multiple executions
+			//Same data multiple execution
+			//if (preferencesdata[4][0]!=""  && preferencesdata[4][0]!="0")		
 			
-		if ("main".equals(testMethod.getName())) 
-		{
-		      annotation.setInvocationCount(invocationcount);		      
-		}
-		//Different data multiple execution
+			if (((String) preferencesdata[4][0]).matches("[0-9]+") && ((String) preferencesdata[4][0]).length() >= 1 && !preferencesdata[4][0].equals("0")) // No need for this condition && !preferencesdata[4][0].equals(""))
+			{
+					invocationcount = Integer.parseInt((String) preferencesdata[4][0]);
+			}
+			else
+			{
+					if (!preferencesdata[5][0].equals("0") && ((String) preferencesdata[5][0]).matches("[0-9]+") && ((String) preferencesdata[5][0]).length() >= 1 )	// check for integer values only
+					{	
+						invocationcount = Integer.parseInt((String) preferencesdata[5][0]); //Different test data each time for multiple executions. It can't work with multiple runs and same test data
+					}
+					else
+					{									//don't need to do anything if nothing mentioned
+						invocationcount = 1;					// This will work if nothing is mentioned for multiple test runs
+					}	
+			}	
+				
+			if ("main".equals(testMethod.getName())) 
+			{
+			      annotation.setInvocationCount(invocationcount);		      
+			}
+			//Different data multiple execution
 		
 		
 	
