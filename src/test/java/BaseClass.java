@@ -48,15 +48,23 @@ public void setUp() throws Exception
 		}					
 	}
 	testcasepath = (String) preferencesdata[0][0];
-	sheetnumber =  Integer.parseInt((String) preferencesdata[1][0]);
+	
+	if (((String) preferencesdata[1][0]).matches("[0-9]+") && ((String) preferencesdata[1][0]).length() >= 0)	//check for integer values only
+	{
+		sheetnumber =  Integer.parseInt((String) preferencesdata[1][0]);
+	}
+	else	sheetnumber = 0; 	// default is 0
+			
+	
+		
 	//check null chrome browser parameter
-	if (preferencesdata[2][0]!="" && preferencesdata[2][0]!="0")  	browsername = (String) preferencesdata[2][0];  
+	if (!preferencesdata[2][0].equals("") && !preferencesdata[2][0].equals("0"))  	browsername = (String) preferencesdata[2][0];  
 	else								browsername = "Chrome";						//Default browser is Chrome, if none specified
 	//check null report path parameter
-	if (preferencesdata[3][0]!="" && preferencesdata[3][0]!="0")		executionreportpath = (String) preferencesdata[3][0];
+	if (!preferencesdata[3][0].equals("") && !preferencesdata[3][0].equals("0"))		executionreportpath = (String) preferencesdata[3][0];
 	else								executionreportpath = "";					//Report path local directory
 	
-	if (preferencesdata[5][0]!="" && preferencesdata[5][0]!="0" && preferencesdata[5][0]!=null )	
+	if (!preferencesdata[5][0].equals("0") && ((String) preferencesdata[5][0]).matches("[0-9]+") && ((String) preferencesdata[5][0]).length() >= 1 )	
 	{	
 		multipleExecutionsDifferentTestData = true;
 	}

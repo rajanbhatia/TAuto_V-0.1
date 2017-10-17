@@ -19,6 +19,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxBinary;
@@ -26,7 +27,9 @@ import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.ie.InternetExplorerDriver;
 import org.openqa.selenium.ie.InternetExplorerOptions;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.AssertJUnit;
 import org.testng.IAnnotationTransformer;
 import org.testng.IAnnotationTransformer3;
@@ -51,6 +54,8 @@ public class Master extends BaseClass implements IAnnotationTransformer
 
 	Set<String> beforepopup;
 	String winhandlebefore;
+	WebDriverWait wait;
+	WebElement elementId, elementXpath, elementName, elementCssSelector; 
 	
 	
 @Test(dataProvider = "TestSteps")//, threadPoolSize=2)		//, invocationCount=invocationcount) //invocationCount set at run time
@@ -65,12 +70,37 @@ public void main(String tcid, String tc_desc, String stepid, String step_desc, S
 		this.command=command;
 		
 		//Auto parameterize test data every time for the textbox enter commands only.
-		if (multipleExecutionsDifferentTestData.equals(true) && (command.equals("Textbox: Enter Text (locator value, test data)"))) 
+		if ((multipleExecutionsDifferentTestData) && (command.equals("Textbox: Enter Text (locator value, test data)"))) 
 		{
 				Calendar cal = Calendar.getInstance();
 				testdata=mData(testdata, cal);
 		}
-	
+		
+		//Check explicitly for every Web Element presence
+		if (!locatortype.equals("") && !locatortype.equals(null))
+		{
+			switch (locatortype)
+			{
+				case "ID":						
+						elementId= wait.until(ExpectedConditions.visibilityOfElementLocated(By.id(locatorvalue)));
+						break;						
+				case "Xpath":						
+						elementXpath=wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(locatorvalue)));
+						break;						
+				case "Name":						
+						elementName=wait.until(ExpectedConditions.visibilityOfElementLocated(By.name(locatorvalue)));
+						break;						
+				case "CssSelector":						
+						elementCssSelector=wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector(locatorvalue)));
+						break;					
+				default:				
+					errormessage="Invalid or No Locator type specified for the object."; //Send error through the AfterMethod and into the report and not via info as above
+					exceptionerror=true;						
+			}
+			
+		}	
+		
+	    
 		
 		//System.out.println(tcid + " " + tc_desc + " " + stepid + " " + step_desc + " " + command  + " " + locatortype  + " " + locatorvalue + " " + testdata + " " + "\n");
 		switch (command)
@@ -159,6 +189,7 @@ public void main(String tcid, String tc_desc, String stepid, String step_desc, S
 					driver.get("https://"+testdata);	
 					driver.manage().window().maximize();
 					driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
+					wait = new WebDriverWait(driver, 12);
 				}
 				break;
 			}
@@ -166,22 +197,30 @@ public void main(String tcid, String tc_desc, String stepid, String step_desc, S
 			case "Textbox: Enter Text (locator value, test data)": 
 			{	
 				checkLocParamBlankValues(locatorvalue, testdata);  //check null or blank values and set the exceptionerror and exceptionmessage text.
-				if (exceptionerror.equals(false))  //Execute it only if the values are valid
+				if (!exceptionerror)  //Execute it only if the values are valid
 				{
 					
 					switch (locatortype)
 					{
 						case "ID":						
-							input_text.textboxIdEnterText(locatorvalue, testdata, driver);
+							//input_text.textboxIdEnterText(locatorvalue, testdata, driver);
+							elementId.clear();
+							elementId.sendKeys(testdata);     // enter text
 							break;						
 						case "Xpath":						
-							input_text.textboxXpathEnterText(locatorvalue, testdata, driver);
+							//input_text.textboxXpathEnterText(locatorvalue, testdata, driver);
+							elementXpath.clear();
+							elementXpath.sendKeys(testdata);     // enter text
 							break;						
 						case "Name":						
-							input_text.textboxNameEnterText(locatorvalue, testdata, driver);
+							//input_text.textboxNameEnterText(locatorvalue, testdata, driver);
+							elementName.clear();
+							elementName.sendKeys(testdata);     // enter text
 							break;						
 						case "CssSelector":						
-							input_text.textboxCssSelectorEnterText(locatorvalue, testdata, driver);
+							//input_text.textboxCssSelectorEnterText(locatorvalue, testdata, driver);
+							elementCssSelector.clear();
+							elementCssSelector.sendKeys(testdata);     // enter text
 							break;					
 						default:						
 							//logger.log(LogStatus.INFO,"Invalid or No Locator type specified for the textbox to enter text."); //JOptionPane.showMessageDialog(null,"Invalid Command.");	//No action and show a message box to the user, if required.
@@ -195,17 +234,18 @@ public void main(String tcid, String tc_desc, String stepid, String step_desc, S
 			case "Textbox: Validate Text (locator value, test data)": 
 			{
 				checkLocParamBlankValues(locatorvalue, testdata);  //check null or blank values and set the exceptionerror and exceptionmessage text.
-				if (exceptionerror.equals(false))  //Execute it only if the values are valid
+				if (!exceptionerror)  //Execute it only if the values are valid
 				{	
 					switch (locatortype)
 					{
-						case "ID": validation.validateTextboxValueById(locatorvalue, testdata, driver);
+						//case "ID": validation.validateTextboxValueById(locatorvalue, testdata, driver);
+						case "ID": validation.validateTextboxValueById(elementId, testdata, driver);
 						break;
-						case "Xpath": validation.validateTextboxValueByXpath(locatorvalue, testdata, driver);
+						case "Xpath": validation.validateTextboxValueByXpath(elementXpath, testdata, driver);
 						break;
-						case "Name": validation.validateTextboxValueByName(locatorvalue, testdata, driver);
+						case "Name": validation.validateTextboxValueByName(elementName, testdata, driver);
 						break;
-						case "CssSelector": validation.validateTextboxValueByCssSelector(locatorvalue, testdata, driver);
+						case "CssSelector": validation.validateTextboxValueByCssSelector(elementCssSelector, testdata, driver);
 						break;
 						default:
 							//logger.log(LogStatus.INFO,"Invalid or No Locator type specified for the textbox to validate text."); //JOptionPane.showMessageDialog(null,"Invalid Command.");	//No action and show a message box to the user, if required.
@@ -219,17 +259,17 @@ public void main(String tcid, String tc_desc, String stepid, String step_desc, S
 			case "Caption/Text: Validate Text (locator value, test data)": 
 			{
 				checkLocParamBlankValues(locatorvalue, testdata);  //check null or blank values and set the exceptionerror and exceptionmessage text.
-				if (exceptionerror.equals(false)) //Execute it only if the values are valid
+				if (!exceptionerror) //Execute it only if the values are valid
 				{
 					switch (locatortype)
 					{
-						case "ID": validation.validateCaptionById(locatorvalue, testdata, driver);
+						case "ID": validation.validateCaptionById(elementId, testdata, driver);
 						break;
-						case "Xpath": validation.validateCaptionByXpath(locatorvalue, testdata, driver);
+						case "Xpath": validation.validateCaptionByXpath(elementXpath, testdata, driver);
 						break;
-						case "Name": validation.validateCaptionByName(locatorvalue, testdata, driver);
+						case "Name": validation.validateCaptionByName(elementName, testdata, driver);
 						break;
-						case "CssSelector": validation.validateCaptionByCssSelector(locatorvalue, testdata, driver);
+						case "CssSelector": validation.validateCaptionByCssSelector(elementCssSelector, testdata, driver);
 						break;
 						default:
 							//logger.log(LogStatus.INFO,"Invalid or No Locator type specified for the caption/text to validate."); //JOptionPane.showMessageDialog(null,"Invalid Command.");	//No action and show a message box to the user, if required.
@@ -242,7 +282,7 @@ public void main(String tcid, String tc_desc, String stepid, String step_desc, S
 			case "Dropdown: Select Value (locator value, test data)": 
 			{
 				checkLocParamBlankValues(locatorvalue, testdata);  //check null or blank values and set the exceptionerror and exceptionmessage text.
-				if (exceptionerror.equals(false)) //Execute it only if the values are valid
+				if (!exceptionerror) //Execute it only if the values are valid
 				{
 					switch (locatortype)
 					{
@@ -267,17 +307,17 @@ public void main(String tcid, String tc_desc, String stepid, String step_desc, S
 			case "Dropdown: Validate Value (locator value, test data)": 
 			{
 				checkLocParamBlankValues(locatorvalue, testdata);  //check null or blank values and set the exceptionerror and exceptionmessage text.
-				if (exceptionerror.equals(false))  //Execute it only if the values are valid
+				if (!exceptionerror)  //Execute it only if the values are valid
 				{
 					switch (locatortype)
 					{
-						case "ID": validation.validateDropdownValueById(locatorvalue, testdata, driver);
+						case "ID": validation.validateDropdownValueById(elementId, testdata, driver);
 						break;
-						case "Xpath": validation.validateDropdownValueByXpath(locatorvalue, testdata, driver);
+						case "Xpath": validation.validateDropdownValueByXpath(elementXpath, testdata, driver);
 						break;
-						case "Name": validation.validateDropdownValueByName(locatorvalue, testdata, driver);
+						case "Name": validation.validateDropdownValueByName(elementName, testdata, driver);
 						break;
-						case "CssSelector": validation.validateDropdownValueByCssSelector(locatorvalue, testdata, driver);
+						case "CssSelector": validation.validateDropdownValueByCssSelector(elementCssSelector, testdata, driver);
 						break;
 						default:
 							//logger.log(LogStatus.INFO,"Invalid or No Locator type specified dropdown to validate value."); //JOptionPane.showMessageDialog(null,"Invalid Command.");	//No action and show a message box to the user, if required.
@@ -291,17 +331,17 @@ public void main(String tcid, String tc_desc, String stepid, String step_desc, S
 			case "Button: Validate Text (locator value, test data)": 
 			{
 				checkLocParamBlankValues(locatorvalue, testdata);  //check null or blank values and set the exceptionerror and exceptionmessage text.
-				if (exceptionerror.equals(false))  //Execute it only if the values are valid
+				if (!exceptionerror)  //Execute it only if the values are valid
 				{
 					switch (locatortype)
 					{
-						case "ID": validation.validateTextboxValueById(locatorvalue, testdata, driver);  //use the textbox attribute code for button also
+						case "ID": validation.validateTextboxValueById(elementId, testdata, driver);  //use the textbox attribute code for button also
 						break;
-						case "Xpath": validation.validateTextboxValueById(locatorvalue, testdata, driver); //use the textbox attribute code for button also
+						case "Xpath": validation.validateTextboxValueByXpath(elementXpath, testdata, driver); //use the textbox attribute code for button also
 						break;
-						case "Name": validation.validateTextboxValueById(locatorvalue, testdata, driver); //use the textbox attribute code for button also
+						case "Name": validation.validateTextboxValueByName(elementName, testdata, driver); //use the textbox attribute code for button also
 						break;
-						case "CssSelector": validation.validateTextboxValueById(locatorvalue, testdata, driver); //use the textbox attribute code for button also
+						case "CssSelector": validation.validateTextboxValueByCssSelector(elementCssSelector, testdata, driver); //use the textbox attribute code for button also
 						break;
 						default:						
 							//logger.log(LogStatus.INFO,"Invalid or No Locator type specified for the button to validate text."); //JOptionPane.showMessageDialog(null,"Invalid Command.");	//No action and show a message box to the user, if required.
@@ -314,21 +354,22 @@ public void main(String tcid, String tc_desc, String stepid, String step_desc, S
 			case "Object: Click (locator value)":
 			{
 				checkLocBlankValue(locatorvalue);  //check null or blank values and set the exceptionerror and exceptionmessage text.
-				if (exceptionerror.equals(false)) //Execute it only if the values are valid
+				if (!exceptionerror) //Execute it only if the values are valid
 				{
 					switch (locatortype)
 					{
-						case "ID": 
+						case "ID":	elementId.sendKeys(Keys.ENTER);		// click not working with IE so sendkeys 
 							//driver.findElement(By.id(locatorvalue)).click();//click.clickIdObject(locatorvalue, driver);
 						//((JavascriptExecutor)driver).executeScript("arguments[0].cli‌​ck()", driver.findElement(By.id(locatorvalue)));
 					
-						driver.findElement(By.id(locatorvalue)).sendKeys(Keys.ENTER);     // click not working with IE so sendkeys
+						//driver.findElement(By.id(locatorvalue)).sendKeys(Keys.ENTER);     // click not working with IE so sendkeys
+							
 						break;
-						case "Xpath": driver.findElement(By.xpath(locatorvalue)).sendKeys(Keys.ENTER);
+						case "Xpath": elementXpath.sendKeys(Keys.ENTER);
 						break;
-						case "Name": driver.findElement(By.name(locatorvalue)).sendKeys(Keys.ENTER);
+						case "Name": elementName.sendKeys(Keys.ENTER);
 						break;
-						case "CssSelector": driver.findElement(By.cssSelector(locatorvalue)).sendKeys(Keys.ENTER);
+						case "CssSelector": elementCssSelector.sendKeys(Keys.ENTER);
 						break;
 						default:
 							//logger.log(LogStatus.INFO,"Invalid or No Locator type specified for the object to click."); //JOptionPane.showMessageDialog(null,"Invalid Command.");	//No action and show a message box to the user, if required.
@@ -343,17 +384,17 @@ public void main(String tcid, String tc_desc, String stepid, String step_desc, S
 			case "Key: Press (Enter/Return/Tab/Escape) (locator value, test data)":
 			{
 				checkLocBlankValue(locatorvalue);  //check null or blank values and set the exceptionerror and exceptionmessage text.
-				if (exceptionerror.equals(false))  //Execute it only if the values are valid
+				if (!exceptionerror)  //Execute it only if the values are valid
 				{
 					switch (locatortype)
 					{
-						case "ID": keypress.keyId(locatorvalue, testdata, driver);
+						case "ID": keypress.keyId(elementId, testdata, driver);
 						break;
-						case "Xpath": keypress.keyXpath(locatorvalue, testdata, driver);
+						case "Xpath": keypress.keyXpath(elementXpath, testdata, driver);
 						break;
-						case "Name": keypress.keyName(locatorvalue, testdata, driver);
+						case "Name": keypress.keyName(elementName, testdata, driver);
 						break;
-						case "CssSelector": keypress.keyCssSelector(locatorvalue, testdata, driver);
+						case "CssSelector": keypress.keyCssSelector(elementCssSelector, testdata, driver);
 						break;
 						default:
 							//logger.log(LogStatus.INFO,"Invalid or No Locator type specified for the key to press."); //JOptionPane.showMessageDialog(null,"Invalid Command.");	//No action and show a message box to the user, if required.
@@ -381,11 +422,12 @@ public void main(String tcid, String tc_desc, String stepid, String step_desc, S
 			case "Object: Validate if Present (locator value)":
 			{
 				checkLocBlankValue(locatorvalue);  //check null or blank values and set the exceptionerror and exceptionmessage text.
-				if (exceptionerror.equals(false))  //Execute it only if the values are valid
+				if (!exceptionerror)  //Execute it only if the values are valid
 				{
 					switch(locatortype)
 					{
 						case "ID":	assertTrue(isElementPresent(By.id(locatorvalue)));
+							//assertTrue(isElementPresent(By.id(locatorvalue)));
 						break;
 						case "Xpath":	assertTrue(isElementPresent(By.xpath(locatorvalue)));
 						break;
@@ -413,17 +455,18 @@ public void main(String tcid, String tc_desc, String stepid, String step_desc, S
 			case "Radiobutton: Validate if Selected (locator value)":
 			{
 				checkLocBlankValue(locatorvalue);  //check null or blank values and set the exceptionerror and exceptionmessage text.
-				if (exceptionerror.equals(false))  //Execute it only if the values are valid
+				if (!exceptionerror)  //Execute it only if the values are valid
 				{
 					switch(locatortype)
 					{
-						case "ID":	assertTrue(driver.findElement(By.id(locatorvalue)).isSelected());
+						case "ID":	assertTrue(elementId.isSelected());
+							//	assertTrue(driver.findElement(By.id(locatorvalue)).isSelected());
 						break;
-						case "Xpath":	assertTrue(driver.findElement(By.xpath(locatorvalue)).isSelected());
+						case "Xpath":	assertTrue(elementXpath.isSelected());
 						break;
-						case "Name":	assertTrue(driver.findElement(By.name(locatorvalue)).isSelected());
+						case "Name":	assertTrue(elementName.isSelected());
 						break;
-						case "CssSelector":	assertTrue(driver.findElement(By.cssSelector(locatorvalue)).isSelected());
+						case "CssSelector":	assertTrue(elementCssSelector.isSelected());
 						break;
 						default:
 							errormessage="Invalid or No Locator type specified for the checkbox/radiobutton to verify the selection."; //JOptionPane.showMessageDialog(null,"Invalid Command.");	//No action and show a message box to the user, if required.
@@ -537,16 +580,16 @@ public Object[][] readTestCases() throws Exception   // Load Data Excel
 @AfterMethod   //executed after every method. Creating to capture the results of Failure.
 public void tearD(ITestResult result) throws Exception
 {
-	 if(ITestResult.FAILURE==result.getStatus() || (exceptionerror.equals(true)))  //Check if Test case has failed
+	 if(ITestResult.FAILURE==result.getStatus() || (exceptionerror))  //Check if Test case has failed
 	 {
 	 	 //String screenshot_path = ReportScreenshotUtility.captureScreenshot(driver,"/test-output/screenshots/",result.getName());   //Take screenshot if Test Case fails
 		 String screenshot_path = ReportScreenshotUtility.captureScreenshot(driver,executionreportpath,result.getName());   //Take screenshot if Test Case fails and at the same location where execution report is saved.
 	 	 String image=logger.addScreenCapture(screenshot_path);
 	 	 logger.log(LogStatus.FAIL, "Failed", image);
 	 	 if(ITestResult.FAILURE==result.getStatus())		logger.log(LogStatus.FAIL, "Step ID: "+stepid+", Step Desc: "+stepdescription+": FAILED. Error Message: "+ result.getThrowable());
-	 	 if (exceptionerror==true)  logger.log(LogStatus.FAIL, "Step ID: "+stepid+", Step Desc: "+stepdescription+": FAILED. Error Message: "+ errormessage);
+	 	 if (exceptionerror)  logger.log(LogStatus.FAIL, "Step ID: "+stepid+", Step Desc: "+stepdescription+": FAILED. Error Message: "+ errormessage);
 	 }
-	 else if (ITestResult.SUCCESS==result.getStatus() && (exceptionerror.equals(false)))   //Check if Test case has passed
+	 else if (ITestResult.SUCCESS==result.getStatus() && (!exceptionerror))   //Check if Test case has passed
 	 {
 	 	 if (command.equals("DO NOT EXECUTE THIS STEP")) logger.log(LogStatus.PASS, "Step ID: "+stepid+", Step Desc: "+stepdescription+": SKIPPED");  //to capture the non-executed step in the report.
 	 	 else logger.log(LogStatus.PASS, "Step ID: "+stepid+", Step Desc: "+stepdescription+": PASSED");	
@@ -627,10 +670,17 @@ public void transform(ITestAnnotation annotation, Class testClass,
 		preferencesdata[4][0]=excelreadpreferences.getData(0, 5, 1); //InvocationCount same data multiple executions  //Picking data from the 2nd row in excel sheet, so i+1
 		preferencesdata[5][0]=excelreadpreferences.getData(0, 6, 1); //InvocationCount different data multiple executions
 		//Same data multiple execution
-		if (preferencesdata[4][0]!=""  && preferencesdata[4][0]!="0")		invocationcount = Integer.parseInt((String) preferencesdata[4][0]);
+		//if (preferencesdata[4][0]!=""  && preferencesdata[4][0]!="0")		
+		System.out.println(((String) preferencesdata[4][0]).matches("[0-9]+"));
+		System.out.println(((String) preferencesdata[4][0]).length());
+		System.out.println(preferencesdata[4][0]);
+		if (((String) preferencesdata[4][0]).matches("[0-9]+") && ((String) preferencesdata[4][0]).length() >= 1 && !preferencesdata[4][0].equals("0")) // No need for this condition && !preferencesdata[4][0].equals(""))
+		{
+				invocationcount = Integer.parseInt((String) preferencesdata[4][0]);
+		}
 		else
-			{
-				if (preferencesdata[5][0]!="" && preferencesdata[5][0]!="0")	
+		{
+				if (!preferencesdata[5][0].equals("0") && ((String) preferencesdata[5][0]).matches("[0-9]+") && ((String) preferencesdata[5][0]).length() >= 1 )	// check for integer values only
 				{	
 					invocationcount = Integer.parseInt((String) preferencesdata[5][0]); //Different test data each time for multiple executions. It can't work with multiple runs and same test data
 				}
@@ -638,7 +688,7 @@ public void transform(ITestAnnotation annotation, Class testClass,
 				{									//don't need to do anything if nothing mentioned
 					invocationcount = 1;					// This will work if nothing is mentioned for multiple test runs
 				}	
-			}	
+		}	
 			
 		if ("main".equals(testMethod.getName())) 
 		{
