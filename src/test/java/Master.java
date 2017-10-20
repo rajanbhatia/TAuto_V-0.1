@@ -1,5 +1,6 @@
 
 import static org.testng.Assert.assertTrue;
+import io.github.bonigarcia.wdm.EdgeDriverManager;
 import io.github.bonigarcia.wdm.FirefoxDriverManager;
 
 import java.awt.BorderLayout;
@@ -18,17 +19,20 @@ import javax.swing.JProgressBar;
 
 import org.apache.poi.ss.usermodel.Row;
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.firefox.FirefoxBinary;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.ie.InternetExplorerDriver;
 import org.openqa.selenium.ie.InternetExplorerOptions;
+import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -58,7 +62,7 @@ public class Master extends BaseClass implements IAnnotationTransformer
 	String winhandlebefore;
 	WebDriverWait wait;
 	WebElement elementId, elementXpath, elementName, elementCssSelector; 
-	
+	int counter =0; //to count if 3 objects are not found together in 3 steps than change the Explicit wait time period for that specific test case
 	
 @Test(dataProvider = "TestSteps")//, threadPoolSize=2)		//, invocationCount=invocationcount) //invocationCount set at run time
 public void main(String tcid, String tc_desc, String stepid, String step_desc, String command, String locatortype, String locatorvalue, String testdata) //, String result, String error)
@@ -70,6 +74,7 @@ public void main(String tcid, String tc_desc, String stepid, String step_desc, S
 		stepdescription=step_desc;
 		this.stepid=stepid;
 		this.command=command;
+		
 		
 		//Auto parameterize test data every time for the textbox enter commands only.
 		if ((multipleExecutionsDifferentTestData) && (command.equals("Textbox: Enter Text (locator value, test data)"))) 
@@ -83,18 +88,25 @@ public void main(String tcid, String tc_desc, String stepid, String step_desc, S
 		{
 			switch (locatortype)
 			{
-				case "ID":						
+				case "ID":
 						elementId= wait.until(ExpectedConditions.visibilityOfElementLocated(By.id(locatorvalue)));
+						counter=0;	//reset to 0, if object is found
 						break;						
-				case "Xpath":						
+				
+				case "Xpath":
 						elementXpath=wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(locatorvalue)));
+						counter=0;	//reset to 0, if object is found
 						break;						
-				case "Name":						
+				
+				case "Name":
 						elementName=wait.until(ExpectedConditions.visibilityOfElementLocated(By.name(locatorvalue)));
+						counter=0;	//reset to 0, if object is found
 						break;						
-				case "CssSelector":						
+				
+				case "CssSelector":
 						elementCssSelector=wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector(locatorvalue)));
-						break;					
+						counter=0;	//reset to 0, if object is found
+						break;
 				default:				
 					errormessage="Invalid or No Locator type specified for the object."; //Send error through the AfterMethod and into the report and not via info as above
 					exceptionerror=true;						
@@ -107,7 +119,7 @@ public void main(String tcid, String tc_desc, String stepid, String step_desc, S
 		//System.out.println(tcid + " " + tc_desc + " " + stepid + " " + step_desc + " " + command  + " " + locatortype  + " " + locatorvalue + " " + testdata + " " + "\n");
 		switch (command)
 		{
-			case "Browser: Open (test data)": 
+			case "Browser: Open (specify link under test data column)": 
 			{
 				logger = ReportScreenshotUtility.report.startTest("Automation Run: Testcase- "+tcid+"("+tc_desc+")"); //To log every testcase on the left panel and teststeps on the right.
 				//browserSettings(driver, testdata);
@@ -174,6 +186,14 @@ public void main(String tcid, String tc_desc, String stepid, String step_desc, S
 							FirefoxDriver fdriver = new FirefoxDriver(firefoxOptions);
 							this.driver=fdriver;				        
 							break;
+					case "Microsoft Edge":
+							System.setProperty("webdriver.edge.driver", System.getProperty("user.dir")+"/drivers/MicrosoftWebDriver.exe");
+							//System.setProperty("webdriver.edge.driver", "C:\\Program Files (x86)\\Microsoft Web Driver\\MicrosoftWebDriver.exe");
+							//DesiredCapabilities capabilities = DesiredCapabilities.edge();
+							//driver = new EdgeDriver(capabilities);
+							//EdgeDriverManager.getInstance().setup(); if using Maven dependency but it doesn't pick the compatible driver.
+							driver = new EdgeDriver();
+							break;							
 					default:						
 							//logger.log(LogStatus.INFO,"Invalid Browser specified."); //JOptionPane.showMessageDialog(null,"Invalid Command.");	//No action and show a message box to the user, if required.
 							errormessage="Invalid Browser type specified.";
@@ -188,10 +208,11 @@ public void main(String tcid, String tc_desc, String stepid, String step_desc, S
 				{
 					f.setVisible(false);
 					f.dispose();
-					driver.get("https://"+testdata);	
+					if (testdata.startsWith("https://") || testdata.startsWith("http://"))		driver.get(testdata);	
+					else								 										driver.get(testdata); //http link code not added now
 					driver.manage().window().maximize();
-					driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
-					wait = new WebDriverWait(driver, 12);
+					//driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS); // No need for Implicit
+					wait = new WebDriverWait(driver, 5); // 5 seconds explicit wait
 				}
 				break;
 			}
@@ -542,6 +563,17 @@ public void main(String tcid, String tc_desc, String stepid, String step_desc, S
 		System.out.println("Error: "+e.getMessage()); // Comment it later on
 		exceptionerror=true;
 	    errormessage=e.getMessage();
+	    System.out.println(elementId);
+	    System.out.println(elementXpath);
+	    System.out.println(elementName);
+	    System.out.println(elementCssSelector);
+	    
+	    //if (elementId!=null)
+	   	//isWebElementVisible(elementId);
+	   	//isWebElementVisible(elementId);
+	   	//isWebElementVisible(elementId);
+	   	//isWebElementVisible(elementId);
+	   	
 	}
 }
 
@@ -591,22 +623,30 @@ public void tearD(ITestResult result) throws Exception
 	 	 //String screenshot_path = ReportScreenshotUtility.captureScreenshot(driver,"/test-output/screenshots/",result.getName());   //Take screenshot if Test Case fails
 		 String screenshot_path = ReportScreenshotUtility.captureScreenshot(driver,executionreportpath,result.getName());   //Take screenshot if Test Case fails and at the same location where execution report is saved.
 	 	 String image=logger.addScreenCapture(screenshot_path);
-	 	 logger.log(LogStatus.FAIL, "Failed", image);
-	 	 if(ITestResult.FAILURE==result.getStatus())		logger.log(LogStatus.FAIL, "Step ID: "+stepid+", Step Desc: "+stepdescription+": FAILED. Error Message: "+ result.getThrowable());
-	 	 if (exceptionerror)  logger.log(LogStatus.FAIL, "Step ID: "+stepid+", Step Desc: "+stepdescription+": FAILED. Error Message: "+ errormessage);
+	 	 String exceptionmessage= image +  "Error Message: "+ result.getThrowable()+".\n"+errormessage;	 	 
+	 	 logger.log(LogStatus.FAIL, "Step ID: "+stepid+", Step Desc: "+stepdescription+".", exceptionmessage);
+	 	 logger.log(LogStatus.INFO,"PageSource",driver.getPageSource());
+	 	 //if(ITestResult.FAILURE==result.getStatus())		logger.log(LogStatus.FAIL, "Step ID: "+stepid+", Step Desc: "+stepdescription+": FAILED. Error Message: "+ result.getThrowable());
+	 	 //if (exceptionerror)  logger.log(LogStatus.FAIL, "Step ID: "+stepid+", Step Desc: "+stepdescription+": FAILED. Error Message: "+ errormessage);
+	 	 // logger.log(LogStatus.FAIL, "HTML Page Source:", driver.findElement(By.tagName("code")).getText()); //get the page source
+	 	//logger.log(LogStatus.FAIL, "HTML Page Source", driver.findElement(By.tagName("code")).getText());  //get the page source
+	 	
+	  	//logger.log(null, pageSource);
+	 	/**String javascript = "return arguments[0].innerHTML";
+	  	 String pagesource=(String)((JavascriptExecutor)driver).executeScript(javascript, driver.findElement(By.tagName("html")));
+	  	 pagesource = "<html>"+pagesource +"</html>";**/ //No need for this code. getPageSource doing the same thing.
 	 }
 	 else if (ITestResult.SUCCESS==result.getStatus() && (!exceptionerror))   //Check if Test case has passed
 	 {
-	 	 if (command.equals("DO NOT EXECUTE THIS STEP")) logger.log(LogStatus.PASS, "Step ID: "+stepid+", Step Desc: "+stepdescription+": SKIPPED");  //to capture the non-executed step in the report.
-	 	 else logger.log(LogStatus.PASS, "Step ID: "+stepid+", Step Desc: "+stepdescription+": PASSED");	
+	 	 if (command.equals("DO NOT EXECUTE THIS STEP")) logger.log(LogStatus.PASS, "Step ID: "+stepid+", Step Desc: "+stepdescription+".","SKIPPED");  //to capture the non-executed step in the report.
+	 	 else logger.log(LogStatus.PASS, "Step ID: "+stepid+", Step Desc: "+stepdescription+".","PASSED");	
 	 }
 	 else if (ITestResult.SKIP==result.getStatus())  //Check if Test case has passed
 	 {
-		logger.log(LogStatus.SKIP, "Step ID: "+stepid+", Step Desc: "+stepdescription+": SKIPPED. "+result.getThrowable());	
+		logger.log(LogStatus.SKIP, "Step ID: "+stepid+", Step Desc: "+stepdescription+": SKIPPED.", result.getThrowable());
 	 }		
-		 ReportScreenshotUtility.report.endTest(logger);
+		// ReportScreenshotUtility.report.endTest(logger);
 		 ReportScreenshotUtility.report.flush();
-		 
 		
 }
 
@@ -711,6 +751,15 @@ public String mData(String string, Calendar cal)
 	//string=new Timestamp(System.currentTimeMillis()).getTime()+""+cal.get(Calendar.DATE)+string;
 	string=System.currentTimeMillis()+""+cal.get(Calendar.DATE)+string;
 	return string;
+}
+
+public void isWebElementVisible(WebElement element)
+{
+	if (!element.isDisplayed()) 					
+	{
+		counter++;  //to check counter progress
+		if(counter==3)	wait = new WebDriverWait(driver, 0); // 0 seconds explicit wait
+	}	
 }
 
 }

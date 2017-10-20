@@ -143,6 +143,11 @@
     	<artifactId>mail</artifactId>
     	<version>1.4.7</version>
 	</dependency>
+	<!-- dependency> MicrosoftEdge WebDriver
+	   <groupId>io.github.bonigarcia</groupId>
+	   <artifactId>webdrivermanager</artifactId>
+	    <version>1.6.2</version>
+	</dependency-->
   	
   </dependencies>
     

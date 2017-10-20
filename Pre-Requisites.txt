@@ -1,5 +1,7 @@
-- Install latest jdk and set its path.
-- Install the browsers.
+- Install latest java and set its path.
+- Install latest maven and set its path.
+- Install the browsers and download drivers.
+- For Microsoft Edge, Find the OS Build # (Start->Settings->System-> About) of the Windows10 OS and then download the compatible MicrosoftWebDriver.exe from the microsoft site.
 - Install git (if using) *
 - Make sure Enable Protected Mode has same setting for all under Tools->Options->Security for IE.
 
@@ -10,4 +12,4 @@
 			-- Do some steps--
 			Browser: Switch back to old browser		
 
-Notes- Don't mention http:// for URLs.
+Notes- Mention complete URL including http:// or https://.
