@@ -92,33 +92,24 @@ public void main(String tcid, String tc_desc, String stepid, String step_desc, S
 			{
 				case "ID":
 						elementId = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id(locatorvalue)));
-						counter=0;	//reset to 0, if object is found
 						break;						
-				
 				case "Xpath":
 						elementXpath = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(locatorvalue)));
-						counter=0;	//reset to 0, if object is found
 						break;						
-				
 				case "Name":
 						elementName = wait.until(ExpectedConditions.visibilityOfElementLocated(By.name(locatorvalue)));
-						counter=0;	//reset to 0, if object is found
 						break;						
-				
 				case "CssSelector":
 						elementCssSelector = wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector(locatorvalue)));
-						counter=0;	//reset to 0, if object is found
 						break;
 				default:				
 					errormessage="Invalid or No Locator type specified for the object."; //Send error through the AfterMethod and into the report and not via info as above
 					exceptionerror=true;
-					
+
 			}
-			wait = new WebDriverWait(driver, 5); // 5 seconds explicit wait
-			
-		}	
-		
-	    
+			counter=0;	//reset to 0, if object is found
+			wait = new WebDriverWait(driver, 5); // Reset to 5 seconds explicit wait, if got changed during 3 NotVisible exceptions 			
+		}		    
 		
 		//System.out.println(tcid + " " + tc_desc + " " + stepid + " " + step_desc + " " + command  + " " + locatortype  + " " + locatorvalue + " " + testdata + " " + "\n");
 		switch (command)
