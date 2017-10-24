@@ -1,4 +1,4 @@
-Browser: Open (specify link under test data column)
+Browser: Open (specify link under Test Data column)
 Browser: Close
 Browser: Save Attributes (before pop-up window)
 Browser: Switch to new browser (pop-up window)

@@ -17,6 +17,8 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JProgressBar;
 
+import net.sourceforge.htmlunit.corejs.javascript.regexp.SubString;
+
 import org.apache.poi.ss.usermodel.Row;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
@@ -84,33 +86,35 @@ public void main(String tcid, String tc_desc, String stepid, String step_desc, S
 		}
 		
 		//Check explicitly for every Web Element presence
-		if (!locatortype.equals("") && !locatortype.equals(null))
+		if (!locatortype.trim().equals("") && !locatortype.equals(null))
 		{
 			switch (locatortype)
 			{
 				case "ID":
-						elementId= wait.until(ExpectedConditions.visibilityOfElementLocated(By.id(locatorvalue)));
+						elementId = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id(locatorvalue)));
 						counter=0;	//reset to 0, if object is found
 						break;						
 				
 				case "Xpath":
-						elementXpath=wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(locatorvalue)));
+						elementXpath = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(locatorvalue)));
 						counter=0;	//reset to 0, if object is found
 						break;						
 				
 				case "Name":
-						elementName=wait.until(ExpectedConditions.visibilityOfElementLocated(By.name(locatorvalue)));
+						elementName = wait.until(ExpectedConditions.visibilityOfElementLocated(By.name(locatorvalue)));
 						counter=0;	//reset to 0, if object is found
 						break;						
 				
 				case "CssSelector":
-						elementCssSelector=wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector(locatorvalue)));
+						elementCssSelector = wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector(locatorvalue)));
 						counter=0;	//reset to 0, if object is found
 						break;
 				default:				
 					errormessage="Invalid or No Locator type specified for the object."; //Send error through the AfterMethod and into the report and not via info as above
-					exceptionerror=true;						
+					exceptionerror=true;
+					
 			}
+			wait = new WebDriverWait(driver, 5); // 5 seconds explicit wait
 			
 		}	
 		
@@ -119,7 +123,7 @@ public void main(String tcid, String tc_desc, String stepid, String step_desc, S
 		//System.out.println(tcid + " " + tc_desc + " " + stepid + " " + step_desc + " " + command  + " " + locatortype  + " " + locatorvalue + " " + testdata + " " + "\n");
 		switch (command)
 		{
-			case "Browser: Open (specify link under test data column)": 
+			case "Browser: Open (specify link under Test Data column)": 
 			{
 				logger = ReportScreenshotUtility.report.startTest("Automation Run: Testcase- "+tcid+"("+tc_desc+")"); //To log every testcase on the left panel and teststeps on the right.
 				//browserSettings(driver, testdata);
@@ -209,10 +213,10 @@ public void main(String tcid, String tc_desc, String stepid, String step_desc, S
 					f.setVisible(false);
 					f.dispose();
 					if (testdata.startsWith("https://") || testdata.startsWith("http://"))		driver.get(testdata);	
-					else								 										driver.get(testdata); //http link code not added now
+					else								 										driver.get("https://"+testdata); //http link code not added now
 					driver.manage().window().maximize();
 					//driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS); // No need for Implicit
-					wait = new WebDriverWait(driver, 5); // 5 seconds explicit wait
+					//wait = new WebDriverWait(driver, 5); // 5 seconds explicit wait
 				}
 				break;
 			}
@@ -563,17 +567,11 @@ public void main(String tcid, String tc_desc, String stepid, String step_desc, S
 		System.out.println("Error: "+e.getMessage()); // Comment it later on
 		exceptionerror=true;
 	    errormessage=e.getMessage();
-	    System.out.println(elementId);
-	    System.out.println(elementXpath);
-	    System.out.println(elementName);
-	    System.out.println(elementCssSelector);
-	    
-	    //if (elementId!=null)
-	   	//isWebElementVisible(elementId);
-	   	//isWebElementVisible(elementId);
-	   	//isWebElementVisible(elementId);
-	   	//isWebElementVisible(elementId);
-	   	
+	    if(errormessage.contains("Expected condition failed: waiting for visibility of element located by")) //check if error is caused by the visibility wait check
+	    {
+	    	counter++; //increase the visibility wait counter by 1
+	    	if(counter>=3)	wait = new WebDriverWait(driver, 0); // if 3 consecutive objects have not been found then, 0 seconds explicit wait    
+	    }
 	}
 }
 
@@ -625,7 +623,7 @@ public void tearD(ITestResult result) throws Exception
 	 	 String image=logger.addScreenCapture(screenshot_path);
 	 	 String exceptionmessage= image +  "Error Message: "+ result.getThrowable()+".\n"+errormessage;	 	 
 	 	 logger.log(LogStatus.FAIL, "Step ID: "+stepid+", Step Desc: "+stepdescription+".", exceptionmessage);
-	 	 logger.log(LogStatus.INFO,"PageSource",driver.getPageSource());
+	 	 ///logger.log(LogStatus.INFO,"PageSource",driver.getPageSource());
 	 	 //if(ITestResult.FAILURE==result.getStatus())		logger.log(LogStatus.FAIL, "Step ID: "+stepid+", Step Desc: "+stepdescription+": FAILED. Error Message: "+ result.getThrowable());
 	 	 //if (exceptionerror)  logger.log(LogStatus.FAIL, "Step ID: "+stepid+", Step Desc: "+stepdescription+": FAILED. Error Message: "+ errormessage);
 	 	 // logger.log(LogStatus.FAIL, "HTML Page Source:", driver.findElement(By.tagName("code")).getText()); //get the page source
