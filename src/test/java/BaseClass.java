@@ -1,5 +1,6 @@
 import java.awt.BorderLayout;
 import java.awt.Container;
+import java.util.Calendar;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
 
@@ -16,6 +17,9 @@ import com.relevantcodes.extentreports.ExtentTest;
 
 
 public class BaseClass {
+	
+	Calendar getCalDate = Calendar.getInstance();
+		
 	protected WebDriver driver;
 	protected InputText input_text =  new InputText();
 	////Clicks click =  new Clicks();
@@ -34,6 +38,8 @@ public class BaseClass {
 @BeforeClass(alwaysRun=true)
 public void setUp() throws Exception 
 {		
+	checkLicense();  // Set the date before distributing in this method.
+		
 	progressBar(); // Call the Progress Bar code
 	f.setVisible(true); //Display the Progress Bar
 	LogManager.getLogManager().reset();
@@ -133,7 +139,20 @@ public void setUp() throws Exception
 		f.setLocationRelativeTo(null);
 	}
 	
-	
+	private void checkLicense()
+	{
+		System.out.println("Date: "+ getCalDate.get(Calendar.MONTH)+"/"+getCalDate.get(Calendar.YEAR));
+		int dateMon = getCalDate.get(Calendar.MONTH)+1;
+		int dateYear = getCalDate.get(Calendar.YEAR);
+		if (dateMon >= 2 && dateYear >= 2019)	
+			{
+				System.out.println("License Expired");
+				JFrame frame = new JFrame("JOptionPane showMessageDialog example");
+			    JOptionPane.showMessageDialog(frame,
+			        "License Expired. Please contact the vendor.");
+			  	System.exit(0);
+			}
+	}
 	
 	
 	
