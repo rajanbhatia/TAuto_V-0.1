@@ -142,6 +142,7 @@ public void setUp() throws Exception
 	private void checkLicense()
 	{
 		System.out.println("Date: "+ getCalDate.get(Calendar.MONTH)+"/"+getCalDate.get(Calendar.YEAR));
+		// System.out.println(System.getProperty("user.name")); To check the USERNAME of the machine
 		int dateMon = getCalDate.get(Calendar.MONTH)+1;
 		int dateYear = getCalDate.get(Calendar.YEAR);
 		if (dateMon >= 2 && dateYear >= 2019)	
